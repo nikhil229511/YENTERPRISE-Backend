@@ -1,0 +1,27 @@
+var Sequelize = require('sequelize');
+var connection;
+
+module.exports={
+    connect : function(){
+        connection=new Sequelize('yashikaenterprise','root','',{
+        host: 'localhost',
+        dialect:'mysql',
+        pool:{
+            max: 5,
+            min: 0,
+            acquire: 30000,
+            idle: 10000
+            }
+        });
+        console.log('connected');
+        return connection;
+    },
+    testConnection: function(){
+        connection.authenticate().then(()=>{
+            console.log('connected');
+        })
+        .catch((err)=>{
+            console.log('error : ',err);
+        })
+    }    
+};
