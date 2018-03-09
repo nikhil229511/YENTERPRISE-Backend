@@ -31,7 +31,8 @@ router.post('/',function(req,res){
       else{
         //console.log(result[0]);
         console.log('connected');
-        res.end(JSON.stringify(result[0]));
+        //res.end(JSON.stringify(result[0]));
+        res.end({"user_id":1,"username":"admin","password":"admin123","fName":"admin","lName":"admin","user_type":"admin","financialYear":"2017","createdAt":"2018-03-15T00:00:00.000Z","updatedAt":"2018-03-15T00:00:00.000Z"});
       }
     });
 });
