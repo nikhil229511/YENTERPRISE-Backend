@@ -8,11 +8,14 @@ var bodyParser =require('body-parser');
 var username,password;
 
 router.get('/',function(req,res){
-  res.render('login',{title:'login Page'});
+  //res.render('login',{title:'login Page'});
+  res.end('success');
 });
 
 router.post('/',function(req,res){
-    username=req.body.username;
+    
+  res.end('success');
+  /*username=req.body.username;
     password=req.body.password;
 
     model.loginMaster().findAll({ where: { username: username, password:password } }).then(function(result,err){
@@ -28,6 +31,6 @@ router.post('/',function(req,res){
         console.log('connected');
         res.end(JSON.stringify(result[0]));
       }
-    });
+    });*/
 });
 module.exports = router;
