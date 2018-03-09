@@ -24,8 +24,9 @@ router.post('/',function(req,res){
         return null;
       }
       else{
+        //console.log(result[0]);
         console.log('connected');
-        res.end(JSON.stringify(req.body));
+        res.end(JSON.stringify(result[0]));
       }
     });
 });

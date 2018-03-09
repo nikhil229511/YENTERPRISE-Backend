@@ -13,12 +13,11 @@ module.exports={
             idle: 10000
             }
         });
-        console.log('connected');
         return connection;
     },
     testConnection: function(){
         connection.authenticate().then(()=>{
-            console.log('connected');
+            console.log('Actually connected');
         })
         .catch((err)=>{
             console.log('error : ',err);
