@@ -14,9 +14,11 @@ router.get('/',function(req,res){
 
 router.post('/',function(req,res){
     
-  res.end('success');
+ // res.end('success');
   /*username=req.body.username;
-    password=req.body.password;
+    password=req.body.password;*/
+    username='admin';
+    password='admin123';
 
     model.loginMaster().findAll({ where: { username: username, password:password } }).then(function(result,err){
       if(err)
@@ -31,6 +33,6 @@ router.post('/',function(req,res){
         console.log('connected');
         res.end(JSON.stringify(result[0]));
       }
-    });*/
+    });
 });
 module.exports = router;
