@@ -14,10 +14,9 @@ router.get('/',function(req,res){
 
 router.post('/',function(req,res){
     
-  res.end('success');
-  /*username=req.body.username;
-    password=req.body.password;
-
+  res.end('{"user_id":1,"username":"admin","password":"admin123","fName":"Jayesh","lName":"Doshi","user_type":"admin","financialYear":"2018-01-01","createdAt":"2018-01-01T00:00:00.000Z","updatedAt":"2018-01-01T00:00:00.000Z"}');
+ /*   username=req.body.username;
+      password=req.body.password;
     model.loginMaster().findAll({ where: { username: username, password:password } }).then(function(result,err){
       if(err)
       throw err;
