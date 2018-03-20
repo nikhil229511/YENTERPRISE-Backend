@@ -14,15 +14,15 @@ router.get('/',function(req,res){
     model.BusinessAssociates().findAll().then(function(result,err){
         if(err)
         throw err;
-      
+        
         if(result[0]==null){
-          console.log('null');
-          return null;
+            console.log('null');
+            return null;
         }
         else{
             res.end(JSON.stringify(result));
         }
-      });
+    });
 });
 
 router.post('/',function(req,res){

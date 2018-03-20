@@ -6,6 +6,7 @@ con.testConnection();
 //var loginmaster;
 //var company;
 //model definition
+var miscincome,miscitem;
 module.exports={
 
     loginMaster:function(){
@@ -64,6 +65,10 @@ module.exports={
                 type: Sequelize.STRING(45),
                 allowNull:false
             },
+            state: {
+                type: Sequelize.STRING(3),
+                allowNull:true
+            },
             statecode: {
                 type: Sequelize.STRING(3)
             },
@@ -119,10 +124,6 @@ module.exports={
             },
             item_master_id: {
                 type: Sequelize.INTEGER,
-                /*references:{
-                    model: 'item_master',
-                    key: 'item_master_id'
-                },*/
                 allowNull:false
             },
             total_items: {
@@ -200,18 +201,10 @@ module.exports={
             },
             ba_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model: 'business_associates',
-                    key: 'ba_id'
-                }*/
+                allowNull:false
             },
             company_id: {
                 type: Sequelize.INTEGER,
-                /*references:{
-                    model:'company_master',
-                    key: 'company_id'
-                },*/
                 allowNull:false
             },
             amount: {
@@ -243,21 +236,13 @@ module.exports={
                 autoIncrement:true
 
             },
-            purchase_detail_id: {
+            purchase_master_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'purchase_master',
-                    key: 'purchase_master_id'
-                }*/
+                allowNull:false
             },
             item_detail_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'item_detail',
-                    key: 'item_detail_id'
-                }*/
+                allowNull:false
             },
             rate: {
                 type: Sequelize.DECIMAL(10,2),
@@ -300,11 +285,7 @@ module.exports={
             },
             ba_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'business_associates',
-                    key:'ba_id'
-                }*/
+                allowNull:false
             },
             amount: {
                 type: Sequelize.DECIMAL(10,2),
@@ -342,18 +323,10 @@ module.exports={
             },
             ba_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model: 'business_associates',
-                    key: 'ba_id'
-                }*/
+                allowNull:false
             },
             company_id: {
                 type: Sequelize.INTEGER,
-                /*references:{
-                    model:'company_master',
-                    key: 'company_id'
-                },*/
                 allowNull:false
             },
             amount: {
@@ -399,19 +372,11 @@ module.exports={
             },
             rent_master_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'rent_master',
-                    key: 'rent_master_id'
-                }*/
+                allowNull:false
             },
             item_detail_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'item_detail',
-                    key: 'item_detail_id'
-                }*/
+                allowNull:false
             },
             rate: {
                 type: Sequelize.DECIMAL(10,2),
@@ -480,7 +445,7 @@ module.exports={
     },
     
     MiscItem:function(){
-        var miscitem = connect.define('misc_item', {
+        miscitem = connect.define('misc_item', {
             misc_item_id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
@@ -498,7 +463,7 @@ module.exports={
     },
 
     MiscIncome:function(){
-        var miscincome = connect.define('misc_income', {
+        miscincome = connect.define('misc_income', {
             misc_income_id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
@@ -509,22 +474,13 @@ module.exports={
                 allowNull:false
             },
             misc_item_id: {
-                type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'misc_item',
-                    key:'misc_item_id'
-                }*/
+                type: Sequelize.UUID,
             },
             company_id: {
                 type: Sequelize.INTEGER,
-                /*references:{
-                    model:'company_master',
-                    key: 'company_id'
-                },*/
                 allowNull:false
             },
-            amout: {
+            amount: {
                 type: Sequelize.DECIMAL(10,2),
                 allowNull:false
             },
@@ -549,21 +505,13 @@ module.exports={
             },
             misc_item_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'misc_item',
-                    key:'misc_item_id'
-                }*/
+                allowNull:false
             },
             company_id: {
                 type: Sequelize.INTEGER,
-                /*references:{
-                    model:'company_master',
-                    key: 'company_id'
-                },*/
                 allowNull:false
             },
-            amout: {
+            amount: {
                 type: Sequelize.DECIMAL(10,2),
                 allowNull:false
             },
@@ -584,11 +532,7 @@ module.exports={
             },
             invoice_no: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'rent_master',
-                    key: 'invoice_no'
-                }*/
+                allowNull:false
             },
             date: {
                 type: Sequelize.DATEONLY,
@@ -596,11 +540,7 @@ module.exports={
             },
             transport_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'transport_master',
-                    key:'transport_id'
-                }*/
+                allowNull:false
             }
         });
         return dispatchmasterhistory;
@@ -615,19 +555,11 @@ module.exports={
             },
             dispatch_master_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'dispatch_master_history',
-                    key: 'dispatch_master_id'
-                }*/
+                allowNull:false
             },
             item_detail_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'item_detail',
-                    key: 'item_detail_id'
-                }*/
+                allowNull:false
             },
             quantity: {
                 type: Sequelize.INTEGER,
@@ -646,11 +578,7 @@ module.exports={
             },
             invoice_no: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'rent_master',
-                    key: 'invoice_no'
-                }*/
+                allowNull:false
             },        
             date: {
                 type: Sequelize.DATEONLY,
@@ -669,19 +597,11 @@ module.exports={
             },
             return_master_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'return_master_history',
-                    key: 'return_master_id'
-                }*/
+                allowNull:false
             },
             item_detail_id: {
                 type: Sequelize.INTEGER,
-                allowNull:false,
-                /*references:{
-                    model:'item_detail',
-                    key: 'item_detail_id'
-                }*/
+                allowNull:false
             },
             quantity: {
                 type: Sequelize.INTEGER,
@@ -696,7 +616,7 @@ module.exports={
         return returndetailhistory;
     },
     //other models here
-    close: function(){
+    close: function(){        
         connect.close();
     }
 };

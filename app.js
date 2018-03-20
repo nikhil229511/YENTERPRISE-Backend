@@ -10,8 +10,14 @@ var cors=require('cors');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login.js');
-var userRegister = require('./routes/userRegister');
+var users = require('./routes/users');
 var businessAssociates = require('./routes/businessAssociates');
+var company = require('./routes/companyDetail');
+var itemMaster = require('./routes/itemMaster');
+var itemDetail = require('./routes/itemDetail');
+var miscItem = require('./routes/miscItem');
+var miscIncome = require('./routes/miscIncome');
+var miscExpense = require('./routes/miscExpense');
 
 var app = express();
 app.use(cors());
@@ -31,8 +37,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/login',login);
 app.use('/', index);
 app.use('/users', users);
-app.use('/userRegister', userRegister);
+app.use('/users', users);
 app.use('/businessAssociates', businessAssociates);
+app.use('/companyDetails', company);
+app.use('/itemMaster', itemMaster);
+app.use('/itemDetail', itemDetail);
+app.use('/miscItem', miscItem);
+app.use('/miscExpense', miscExpense);
+app.use('/miscIncome', miscIncome);
 
 
 // catch 404 and forward to error handler

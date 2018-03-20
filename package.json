@@ -20,6 +20,7 @@
     "mysql2": "^1.5.2",
     "sequelize": "^4.33.3",
     "sequelize-cli": "^3.2.0",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "standard": "*"
   }
 }
