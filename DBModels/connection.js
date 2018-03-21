@@ -17,7 +17,7 @@ module.exports={
     },
     testConnection: function(){
         connection.authenticate().then(()=>{
-            console.log('Actually connected');
+            console.log('Database Connected');
         })
         .catch((err)=>{
             console.log('error : ',err);

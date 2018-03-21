@@ -21,8 +21,6 @@ var associations=function(){
     // model.ReturnDetailHistory().belongsToMany(model.ItemDetail(),{foreignKey:'item_detail_id'});
     // model.ReturnDetailHistory().belongsToMany(model.ReturnMasterHistory(),{foreignKey:'return_master_id'});
     // model.MiscIncome().belongsToMany(model.MiscItem(),{foreignKeyConstraint:'fk2',through: 'mimi',foreignKey:'misc_item_id'});
-    // model.MiscItem().hasMany(model.MiscIncome(),{foreignKeyConstraint : "fk2",foreignKey : "misc_item_id"});
-    
     // model.MiscIncome().belongsToMany(model.companyMaster(),{foreignKey:'company_id'});
     // model.MiscExpense().belongsToMany(model.MiscItem(),{foreignKey:'misc_item_id'});
     // model.MiscExpense().belongsToMany(model.companyMaster(),{foreignKey:'company_id'});

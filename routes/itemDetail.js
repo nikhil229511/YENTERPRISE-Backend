@@ -6,31 +6,32 @@ var connect=con.connect();
 var app=express();
 var bodyParser =require('body-parser');
 
-var name='JACK',hsn='542',description='test for item master';
+var item_master_name,item_master_id,total_items,damaged_items,description;
 
 router.get('/',function(req,res){
-  //res.render('users',);
-  model.ItemDetail().findAll({where: {item_master_id: '2'}}).then(function(result,err){
+model.ItemDetail().findAll(/*{where: {item_master_id: '2'}}*/).then(function(result,err){
     if(err)
-        throw err;
+    res.end('Error: '+Err);
     
     if(result[0]==null){
         console.log('null');
-        return null;
+        res.end('Null');
     }
     else
         res.end(JSON.stringify(result));
     });
 });
 
-/*router.post('/',function(req,res){
-    
-    model.ItemMaster().create({
-        item_master_name:name,
-        hsn_code:hsn,
+router.post('/',function(req,res){
+
+    model.ItemDetail().create({
+        item_master_name:item_master_name,
+        item_master_id:item_master_id,
+        total_items:total_items,
+        damaged_items:damaged_items,
         description:description        
     }).then(function(err){
         console.log('created Master Item');
     });
-});*/
+});
 module.exports = router;

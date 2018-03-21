@@ -6,47 +6,46 @@ var connect=con.connect();
 var app=express();
 var bodyParser =require('body-parser');
 
-var statecode,name,add1,add2,PIN,logo,state,contactno,GSTNO;
+var name,add1,add2,PIN,state_code,state,GSTNo,contactno,email,is_customer;
 
 router.get('/',function(req,res){
-  //res.render('users',);
-  model.companyMaster().findAll().then(function(result,err){
-    if(err)
-    res.end('Error: '+err);
-    
-    if(result[0]==null){
-        console.log('null');
-        res.end('Null Response');
-    }
-    else
-        res.end(JSON.stringify(result));
+    model.TransportMaster().findAll().then(function(result,err){
+        if(err)
+        res.end('Error: '+err);
+        
+        if(result[0]==null)
+            res.end('Null');
+        else
+            res.end(JSON.stringify(result));
     });
 });
 
 router.post('/',function(req,res){
-    
     name=req.body.name;
     add1=req.body.add1;
     add2=req.body.add2;
     PIN=req.body.PIN;
     state=req.body.state;
-    statecode=req.body.statecode;
-    GSTNO=req.body.GSTNo;
+    statecode=req.body.state_code;
+    GSTNo=req.body.GSTNo;
     contactno=req.body.contactno;
-    logo=req.body.logo;
+    email=req.body.email;
+    is_customer=req.body.is_customer;
 
-    model.companyMaster().create({
+    model.TransportMaster().create({
         name:name,
         add1:add1,
         add2:add2,
         PIN:PIN,
         state:state,
-        statecode:statecode,
-        GSTNo:GSTNO,
+        statecode:state_code,
+        GSTNo:GSTNo,
         contactno:contactno,
-        logo:logo
+        email:email,
+        is_customer:is_customer,
     }).then(function(err){
-        console.log('created company');
+        console.log('created Business Associates');
     });
+    res.end();
 });
 module.exports = router;
