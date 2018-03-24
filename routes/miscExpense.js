@@ -6,33 +6,40 @@ var connect=con.connect();
 var app=express();
 var bodyParser =require('body-parser');
 
-var date='2017-11-11',miscitemid=1,comid=1,amount=10.50,des='test description';
+var date,miscitemid,comid,amount,des,sql;
 
 router.get('/',function(req,res){
-  //res.render('users',);
-  model.MiscExpense().findAll().then(function(result,err){
-    if(err)
-        throw err;
-    
-    if(result[0]==null){
-        console.log('null');
-        return null;
-    }
-    else
+    var sql="SELECT * FROM misc_expenses";
+    connect.query(sql, function (err, result, fields) {
+        if (err) throw err;
         res.end(JSON.stringify(result));
     });
 });
-
-router.post('/',function(req,res){
+router.post('/insert',function(req,res){
+    date=req.body.date;
+    miscitemid=req.body.misc_item_id;
+    comid=req.body.company_id;
+    amount=req.body.amount;
+    des=req.body.description;
     
-    model.MiscExpense().create({
-        date:date,
-        misc_item_id:miscitemid,
-        company_id:comid,
-        amount:amount,
-        description:des        
-    }).then(function(err){
-        console.log('created Misc expense');
+    sql="INSERT INTO misc_expenses(date,misc_item_id,company_id,amount,description) values ('"+date+"',"+miscitemid+","+comid+","+amount+",'"+des+"')";
+        console.log(sql);
+        connect.query(sql, function (err, result) {
+        if (err) throw err;
+        res.end("success");
     });
+
+});
+router.post('/delete',function(req,res){
+    
+    misc_expense_id=req.body.misc_expense_id;
+    
+    sql="DELETE FROM misc_expenses WHERE misc_expense_id="+misc_expense_id+"";
+        console.log(sql);
+        connect.query(sql, function (err, result) {
+        if (err) throw err;
+        res.end("success");
+    });
+
 });
 module.exports = router;

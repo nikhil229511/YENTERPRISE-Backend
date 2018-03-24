@@ -62,22 +62,26 @@ module.exports={
                 type: Sequelize.TEXT
             },
             PIN: {
-                type: Sequelize.STRING(45),
+                type: Sequelize.STRING(10),
                 allowNull:false
             },
             state: {
-                type: Sequelize.STRING(3),
+                type: Sequelize.STRING(15),
                 allowNull:true
             },
             statecode: {
                 type: Sequelize.STRING(3)
             },
             GSTNo: {
-                type: Sequelize.STRING(10)
+                type: Sequelize.STRING(20)
             },
             contactno: {
-                type: Sequelize.STRING(10),
+                type: Sequelize.STRING(11),
                 allowNull:false
+            },
+            email:{
+                type:Sequelize.STRING(50),
+                allowNull:true
             },
             logo: {
                 type: Sequelize.STRING,
@@ -163,8 +167,12 @@ module.exports={
                 type: Sequelize.STRING(45),
                 allowNull:false
             },
+            state:{
+                type:Sequelize.STRING(15)
+            },
             statecode: {
-                type: Sequelize.STRING(3)
+                type: Sequelize.STRING(3),
+                allowNull:true
             },
             GSTNo: {
                 type: Sequelize.STRING(10)
@@ -315,7 +323,8 @@ module.exports={
             },
             invoice_no: {
                 type: Sequelize.STRING(14),
-                allowNull:false
+                allowNull:false,
+                unique:true
             },
             date: {
                 type: Sequelize.DATE,
@@ -424,6 +433,10 @@ module.exports={
                 type: Sequelize.STRING(45),
                 allowNull:false
             },
+            state:{
+                type:Sequelize.STRING(15),
+                allowNull:true
+            },
             statecode: {
                 type: Sequelize.STRING(3),
                 allowNull:true
@@ -474,7 +487,7 @@ module.exports={
                 allowNull:false
             },
             misc_item_id: {
-                type: Sequelize.UUID,
+                type: Sequelize.INTEGER,
             },
             company_id: {
                 type: Sequelize.INTEGER,
@@ -531,7 +544,7 @@ module.exports={
                 autoIncrement:true
             },
             invoice_no: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING(14),
                 allowNull:false
             },
             date: {
@@ -577,7 +590,7 @@ module.exports={
                 autoIncrement:true
             },
             invoice_no: {
-                type: Sequelize.INTEGER,
+                type: Sequelize.STRING(14),
                 allowNull:false
             },        
             date: {

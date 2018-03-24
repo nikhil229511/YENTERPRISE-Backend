@@ -17,10 +17,12 @@
     "express-session": "^1.15.6",
     "git-cli": "^0.10.0",
     "morgan": "~1.9.0",
+    "mysql": "^2.15.0",
     "mysql2": "^1.5.2",
     "sequelize": "^4.33.3",
     "sequelize-cli": "^3.2.0",
     "serve-favicon": "~2.4.5",
-    "standard": "*"
+    "standard": "*",
+    "urlencode": "^1.1.0"
   }
 }

@@ -8,7 +8,6 @@ var cors=require('cors');
 
 //include js files
 var index = require('./routes/index');
-var users = require('./routes/users');
 var login = require('./routes/login.js');
 var users = require('./routes/users');
 var businessAssociates = require('./routes/businessAssociates');
@@ -19,6 +18,8 @@ var miscItem = require('./routes/miscItem');
 var miscIncome = require('./routes/miscIncome');
 var miscExpense = require('./routes/miscExpense');
 var transportMaster = require('./routes/transportMaster');
+
+var testStateAPI = require('./routes/testStateAPI');
 
 var app = express();
 app.use(cors());
@@ -35,9 +36,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //link page name to js page
-app.use('/login',login);
 app.use('/', index);
-app.use('/users', users);
+app.use('/login',login);
 app.use('/users', users);
 app.use('/businessAssociates', businessAssociates);
 app.use('/companyDetails', company);
@@ -47,6 +47,8 @@ app.use('/miscItem', miscItem);
 app.use('/miscExpense', miscExpense);
 app.use('/miscIncome', miscIncome);
 app.use('/transportMaster', transportMaster);
+
+// app.use('/testStateAPI', testStateAPI);
 
 
 // catch 404 and forward to error handler

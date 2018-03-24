@@ -6,32 +6,41 @@ var connect=con.connect();
 var app=express();
 var bodyParser =require('body-parser');
 
-var item_master_name,item_master_id,total_items,damaged_items,description;
+var item_detail_name,item_master_id,total_items,damaged_items,description;
 
 router.get('/',function(req,res){
-model.ItemDetail().findAll(/*{where: {item_master_id: '2'}}*/).then(function(result,err){
-    if(err)
-    res.end('Error: '+Err);
-    
-    if(result[0]==null){
-        console.log('null');
-        res.end('Null');
-    }
-    else
+    var sql="SELECT * FROM item_details";
+    connect.query(sql, function (err, result, fields) {
+        if (err) throw err;
         res.end(JSON.stringify(result));
     });
 });
 
-router.post('/',function(req,res){
+router.post('/insert',function(req,res){
 
-    model.ItemDetail().create({
-        item_master_name:item_master_name,
-        item_master_id:item_master_id,
-        total_items:total_items,
-        damaged_items:damaged_items,
-        description:description        
-    }).then(function(err){
-        console.log('created Master Item');
+    item_detail_name=req.body.item_detail_name;
+    item_master_id=req.body.item_master_id;
+    total_items=req.body.total_items;
+    damaged_items=req.body.damaged_items;
+    description=req.body.description;
+    
+    sql="INSERT INTO item_details(item_detail_name,item_master_id,total_items,damaged_items,description) values ('"+item_detail_name+"','"+item_master_id+"','"+total_items+"','"+damaged_items+"','"+description+"')";
+        console.log(sql);
+        connect.query(sql, function (err, result) {
+        if (err) throw err;
+        res.end("success");
+    });
+});
+
+router.post('/delete',function(req,res){
+
+    item_detail_id=req.body.item_detail_id;
+    
+    sql="DELETE FROM item_details WHERE item_detail_id="+item_detail_id+"";
+        console.log(sql);
+        connect.query(sql, function (err, result) {
+        if (err) throw err;
+        res.end("success");
     });
 });
 module.exports = router;

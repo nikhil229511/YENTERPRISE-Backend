@@ -9,19 +9,14 @@ var bodyParser =require('body-parser');
 var username,password,fName,lName,user_type,financialYear;
 
 router.get('/',function(req,res){
-  //res.render('users',);
-  model.loginMaster().findAll({ where: { user_type: 'staff' } }).then(function(result,err){
-    if(err)
-    res.end('Error: '+err);
-    
-    if(result[0]==null)
-        res.end('Null');
-    else
-        res.end(JSON.stringify(result));
+    var sql="SELECT * FROM login_masters WHERE user_type='admin'";
+    connect.query(sql, function (err, result, fields) {
+    if (err) throw err;
+    res.end(JSON.stringify(result));
     });
 });
 
-router.post('/',function(req,res){
+router.post('/insert',function(req,res){
     
     username=req.body.username;
     password=req.body.password;
@@ -30,15 +25,22 @@ router.post('/',function(req,res){
     user_type=req.body.user_type;
     financialYear=req.body.financialYear;
 
-    model.loginMaster().create({
-        username:username,
-        password:password,
-        fName:fName,
-        lName:lName,
-        user_type:user_type,
-        financialYear:financialYear
-    }).then(function(err){
-        console.log('created User');
-    })
-})
+    var sql="INSERT INTO login_masters(username,password,fName,lName,user_type,financialYear) values ('"+username+"','"+password+"','"+fName+"','"+lName+"','"+user_type+"','"+financialYear+"')";
+    console.log(sql);
+    connect.query(sql, function (err, result) {
+    if (err) throw err;
+    res.end("success");
+    });
+});
+
+router.post('/delete',function(req,res){
+    
+    id=req.body.user_id;
+    var sql="DELETE FROM login_masters WHERE user_id="+id+"";
+    console.log(sql);
+    connect.query(sql, function (err, result) {
+    if (err) throw err;
+    res.end("success");
+    });
+});
 module.exports = router

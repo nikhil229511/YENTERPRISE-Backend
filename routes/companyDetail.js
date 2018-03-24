@@ -6,47 +6,44 @@ var connect=con.connect();
 var app=express();
 var bodyParser =require('body-parser');
 
-var statecode,name,add1,add2,PIN,logo,state,contactno,GSTNO;
+var sql,statecode,name,add1,add2,PIN,logo,email,state,contactno,GSTNO;
 
 router.get('/',function(req,res){
-  //res.render('users',);
-  model.companyMaster().findAll().then(function(result,err){
-    if(err)
-    res.end('Error: '+err);
-    
-    if(result[0]==null){
-        console.log('null');
-        res.end('Null Response');
-    }
-    else
+    var sql="SELECT * FROM company_masters";
+    connect.query(sql, function (err, result, fields) {
+        if (err) throw err;
         res.end(JSON.stringify(result));
     });
 });
 
-router.post('/',function(req,res){
-    
+router.post('/insert',function(req,res){
     name=req.body.name;
     add1=req.body.add1;
     add2=req.body.add2;
     PIN=req.body.PIN;
     state=req.body.state;
     statecode=req.body.statecode;
-    GSTNO=req.body.GSTNo;
+    GSTNo=req.body.GSTNo;
     contactno=req.body.contactno;
+    email=req.body.email;
     logo=req.body.logo;
 
-    model.companyMaster().create({
-        name:name,
-        add1:add1,
-        add2:add2,
-        PIN:PIN,
-        state:state,
-        statecode:statecode,
-        GSTNo:GSTNO,
-        contactno:contactno,
-        logo:logo
-    }).then(function(err){
-        console.log('created company');
+    sql="INSERT INTO company_masters(name,add1,add2,PIN,state,statecode,GSTNo,contactno,email,logo) values ('"+name+"','"+add1+"','"+add2+"','"+PIN+"','"+state+"','"+statecode+"','"+GSTNo+"','"+contactno+"','"+email+"','"+logo+"')";
+        console.log(sql);
+        connect.query(sql, function (err, result) {
+        if (err) throw err;
+        res.end("success");
+    });
+});
+
+router.post('/delete',function(req,res){
+    company_id=req.body.company_id;
+
+    sql="DELETE FROM company_masters WHERE company_id="+company_id+"";
+        console.log(sql);
+        connect.query(sql, function (err, result) {
+        if (err) throw err;
+        res.end("success");
     });
 });
 module.exports = router;
