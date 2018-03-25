@@ -2,6 +2,34 @@ var Sequelize = require('sequelize');
 var con=require('./connection');
 var model=require('./Models');
 
+var associations=function(){
+    // model.ItemDetail().belongsToMany(model.ItemMaster(),{through: 'im',foreignKey:'item_master_id'});
+    //model.PurchaseMaster().belongsToMany(model.BusinessAssociates(),{foreignKey:'ba_id'});
+    // model.PurchaseMaster().belongsToMany(model.companyMaster(),{foreignKey:'company_id'});
+    // model.PurchaseDetail().belongsToMany(model.PurchaseMaster(),{foreignKey:'purchase_master_id'});
+    // model.PurchaseDetail().belongsToMany(model.ItemDetail(),{foreignKey:'item_detail_id'});
+    // model.Cashflow().belongsToMany(model.BusinessAssociates(),{foreignKey:'ba_id'});
+    // model.RentMaster().belongsToMany(model.BusinessAssociates(),{foreignKey:'ba_id'});
+    // model.RentMaster().belongsToMany(model.companyMaster(),{foreignKey:'company_id'});
+    // model.RentDetail().belongsToMany(model.RentMaster(),{foreignKey:'rent_master_id'});    
+    // model.RentDetail().belongsToMany(model.ItemDetail(),{foreignKey:'item_detail_id'});
+    // model.DispatchMasterHistory().belongsToMany(model.RentMaster(),{foreignKey:'invoice_no'});
+    // model.DispatchMasterHistory().belongsToMany(model.TransportMaster(),{foreignKey:'transport_id'});
+    // model.DispatchDetailHistory().belongsToMany(model.DispatchMasterHistory(),{foreignKey:'dispatch_master_id'});
+    // model.DispatchDetailHistory().belongsToMany(model.ItemDetail(),{foreignKey:'item_detail_id'});
+    // model.ReturnMasterHistory().belongsToMany(model.RentMaster(),{foreignKey:'invoice_no'});
+    // model.ReturnDetailHistory().belongsToMany(model.ItemDetail(),{foreignKey:'item_detail_id'});
+    // model.ReturnDetailHistory().belongsToMany(model.ReturnMasterHistory(),{foreignKey:'return_master_id'});
+    // model.MiscIncome().belongsToMany(model.MiscItem(),{foreignKeyConstraint:'fk2',through: 'mimi',foreignKey:'misc_item_id'});
+    // model.MiscIncome().belongsToMany(model.companyMaster(),{foreignKey:'company_id'});
+    // model.MiscExpense().belongsToMany(model.MiscItem(),{foreignKey:'misc_item_id'});
+    // model.MiscExpense().belongsToMany(model.companyMaster(),{foreignKey:'company_id'});
+    // console.log('hi');
+}
+
+//foreign keys
+//associations();
+
 model.loginMaster().sync({force:true}).then(function(){
     console.log('login master');
 });
@@ -13,6 +41,7 @@ model.companyMaster().sync({force:true}).then(function(){
 model.ItemMaster().sync({force:true}).then(function(){
     console.log('Item Master');        
 });
+
 
 model.ItemDetail().sync({force:true}).then(function(){
     console.log('Item Detail');

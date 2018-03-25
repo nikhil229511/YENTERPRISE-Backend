@@ -5,41 +5,45 @@ var model= require('./../DBModels/Models');
 var connect=con.connect();
 var app=express();
 var bodyParser =require('body-parser');
-
-var name='abc',add1='abc',add2='abc',PIN='abc';
-var state_code='admin',GSTNO='2017',cno='1234567890',email='abc@abc.abc';
-var isCus=false;
+var sql,name,add1,add2,PIN,state_code,state,GSTNo,contactno,email,is_customer;
 
 router.get('/',function(req,res){
-    model.BusinessAssociates().findAll().then(function(result,err){
-        if(err)
-        throw err;
-      
-        if(result[0]==null){
-          console.log('null');
-          return null;
-        }
-        else{
-            res.end(JSON.stringify(result));
-        }
-      });
+    var sql="SELECT * FROM business_associates";
+    connect.query(sql, function (err, result, fields) {
+        if (err) throw err;
+        res.end(JSON.stringify(result));
+    });
 });
 
-router.post('/',function(req,res){
+router.post('/insert',function(req,res){
+    name=req.body.name;
+    add1=req.body.add1;
+    add2=req.body.add2;
+    PIN=req.body.PIN;
+    statecode=req.body.statecode;
+    GSTNo=req.body.GSTNo;
+    contactno=req.body.contactno;
+    email=req.body.email;
+    state=req.body.state;
+    is_customer=req.body.is_customer;
     
-    model.BusinessAssociates().create({
-        name:name,
-        add1:add1,
-        add2:add2,
-        PIN:PIN,
-        statecode:state_code,
-        GSTNo:GSTNO,
-        contactno:cno,
-        email:email,
-        is_customer:isCus,
-    }).then(function(err){
-        console.log('created Business Associates');
-    });
-    res.end();
+        sql="INSERT INTO business_associates(name,add1,add2,PIN,state,statecode,GSTNo,contactno,email,is_customer) values ('"+name+"','"+add1+"','"+add2+"','"+PIN+"','"+state+"','"+statecode+"','"+GSTNo+"','"+contactno+"','"+email+"','"+is_customer+"')";
+        console.log(sql);
+        connect.query(sql, function (err, result) {
+        if (err) throw err;
+        res.end("success");
+        });
 });
+
+router.post('/delete',function(req,res){
+    ba_id=req.body.ba_id;
+    
+    sql="DELETE FROM business_associates WHERE ba_id="+ba_id+"";
+    console.log(sql);
+    connect.query(sql, function (err, result) {
+    if (err) throw err;
+    res.end("success");
+    });
+});
+
 module.exports = router;

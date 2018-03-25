@@ -8,11 +8,11 @@ var bodyParser =require('body-parser');
 var username,password;
 
 router.get('/',function(req,res){
-  //res.render('login',{title:'login Page'});
   res.end('success');
 });
 
 router.post('/',function(req,res){
+<<<<<<< HEAD
     
   //res.end('{"user_id":1,"username":"admin","password":"admin123","fName":"Jayesh","lName":"Doshi","user_type":"admin","financialYear":"2018-01-01","createdAt":"2018-01-01T00:00:00.000Z","updatedAt":"2018-01-01T00:00:00.000Z"}');
     username='admin';
@@ -30,6 +30,15 @@ router.post('/',function(req,res){
         console.log('connected');
         res.end(JSON.stringify(result[0]));
       }
+=======
+    username=req.body.username;
+    password=req.body.password;
+
+    var sql="SELECT * FROM login_masters WHERE username='"+username+"' and password='"+password+"'";
+    connect.query(sql, function (err, result, fields) {
+      if (err) throw err;
+      res.end(JSON.stringify(result));
+>>>>>>> 71801984f3df23b442d35b4e368042fff60c0df9
     });
 });
 module.exports = router;
