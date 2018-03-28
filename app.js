@@ -18,8 +18,9 @@ var miscItem = require('./routes/miscItem');
 var miscIncome = require('./routes/miscIncome');
 var miscExpense = require('./routes/miscExpense');
 var transportMaster = require('./routes/transportMaster');
+var purchase = require('./routes/purchase');
 
-var testStateAPI = require('./routes/testStateAPI');
+//var testStateAPI = require('./routes/testStateAPI');
 
 var app = express();
 app.use(cors());
@@ -47,6 +48,7 @@ app.use('/miscItem', miscItem);
 app.use('/miscExpense', miscExpense);
 app.use('/miscIncome', miscIncome);
 app.use('/transportMaster', transportMaster);
+app.use('/purchase', purchase);
 
 // app.use('/testStateAPI', testStateAPI);
 

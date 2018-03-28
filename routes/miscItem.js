@@ -11,7 +11,8 @@ var item_name,description,sql;
 router.get('/',function(req,res){
     var sql="SELECT * FROM misc_items";
     connect.query(sql, function (err, result, fields) {
-        if (err) throw err;
+        if (err) 
+            res.end('Unsuccessful');
         res.end(JSON.stringify(result));
     });
 });
@@ -23,7 +24,21 @@ router.post('/insert',function(req,res){
     sql="INSERT INTO misc_items(item_name,description) values ('"+item_name+"','"+description+"')";
         console.log(sql);
         connect.query(sql, function (err, result) {
-        if (err) throw err;
+        if (err)
+            res.end('Unsuccessful');
+        res.end("success");
+    });
+});
+
+router.post('/update',function(req,res){
+    item_name=req.body.item_name;
+    description=req.body.description;
+    misc_item_id=req.body.misc_item_id;
+    sql="UPDATE misc_items set item_name='"+item_name+"',description='"+description+"' WHERE misc_item_id="+misc_item_id+"";
+        console.log(sql);
+        connect.query(sql, function (err, result) {
+        if (err)
+            res.end('Unsuccessful');
         res.end("success");
     });
 });
@@ -34,7 +49,8 @@ router.post('/delete',function(req,res){
     sql="DELETE FROM misc_items WHERE misc_item_id="+misc_item_id+"";
         console.log(sql);
         connect.query(sql, function (err, result) {
-        if (err) throw err;
+        if (err)
+            res.end('Unsuccessful');
         res.end("success");
     });
 });
