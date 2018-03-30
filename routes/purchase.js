@@ -5,8 +5,9 @@ var model= require('./../DBModels/Models');
 var connect=con.connect();
 var app=express();
 var bodyParser =require('body-parser');
+var async=require('async');
 
-var sql,name,add1,add2,PIN,state_code,state,GSTNo,contactno,email;
+var id,sql,invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_credit;
 
 router.get('/',function(req,res){
     var sql="SELECT * FROM purchase_masters";
@@ -16,26 +17,76 @@ router.get('/',function(req,res){
     });
 });
 
-router.post('/insert',function(req,res){
-    name=req.body.name;
-    add1=req.body.add1;
-    add2=req.body.add2;
-    PIN=req.body.PIN;
-    state=req.body.state;
-    statecode=req.body.statecode;
-    GSTNo=req.body.GSTNo;
-    contactno=req.body.contactno;
-    email=req.body.email;
-
-    sql="INSERT INTO transport_masters(name,add1,add2,PIN,state,statecode,GSTNo,contactno,email) values ('"+name+"','"+add1+"','"+add2+"','"+PIN+"','"+state+"','"+statecode+"','"+GSTNo+"','"+contactno+"','"+email+"')";
-        console.log(sql);
-        connect.query(sql, function (err, result) {
+router.get('/loadBA',function(req,res){
+    var sql="SELECT ba_id,name FROM business_associates WHERE is_customer=0";
+    connect.query(sql, function (err, result, fields) {
         if (err) throw err;
-        res.end("success");
+        res.end(JSON.stringify(result));
     });
 });
 
-router.post('/delete',function(req,res){
+router.get('/loadCOMPANY',function(req,res){
+    var sql="SELECT company_id,name FROM company_masters";
+    connect.query(sql, function (err, result, fields) {
+        if (err) throw err;
+        res.end(JSON.stringify(result));
+    });
+});
+
+router.post('/insert',function(req,res){
+    invoice_no=req.body.invoice_no;
+    date=req.body.date;
+    ba_id=req.body.ba_id;
+    company_id=req.body.company_id;
+    amount=req.body.amount;
+    taxes=req.body.taxes;
+    overhead_charges=req.body.overhead_charges;
+    is_credit=req.body.is_credit;
+    
+    async.series([
+        function(callback){
+            sql="START TRANSACTION";
+            console.log(sql);
+            connect.query(sql, function (err, result) {
+                if (err) throw err;
+                id=result.insertId;
+                //console.log(id);
+                callback(null,'succes1');    
+            });
+        },
+        function(callback){
+            sql="INSERT INTO purchase_masters(invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_credit) values ('"+invoice_no+"','"+date+"',"+ba_id+","+company_id+","+amount+","+taxes+","+overhead_charges+","+is_credit+");";
+            console.log(sql);
+            connect.query(sql, function (err, result) {
+                if (err) throw err;
+                id=result.insertId;
+                //console.log(id);
+                callback(null,'succes2');    
+            });
+        },
+        function(callback){
+            sqlSub="INSERT INTO purchase_details(purchase_master_id,item_detail_id,rate,quantity,cgst,sgst,igst) values ("+id+",2,50,25,5,5,0);";
+            console.log(sqlSub);
+            connect.query(sqlSub, function (err, result) {
+                if (err) throw err;
+                callback(null,'success3');
+            });
+        },
+        function(callback){
+            sqlSub="COMMIT";
+            console.log(sqlSub);
+            connect.query(sqlSub, function (err, result) {
+                if (err) throw err;
+                callback(null,'success4');
+            });
+        }
+    ],
+    function(){
+        res.end('success');
+    });
+});
+
+/*router.post('/delete',function(req,res){
     transport_id=req.body.transport_id;
     
     sql="DELETE FROM transport_masters WHERE transport_id="+transport_id+"";
@@ -45,5 +96,5 @@ router.post('/delete',function(req,res){
         res.end("success");
     });
 });
-
+*/
 module.exports = router;
