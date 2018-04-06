@@ -51,7 +51,7 @@ app.use('/miscExpense', miscExpense);
 app.use('/miscIncome', miscIncome);
 app.use('/transportMaster', transportMaster);
 
-// app.use('/testStateAPI', testStateAPI);
+ app.use('/testStateAPI', testStateAPI);
 
 
 // catch 404 and forward to error handler

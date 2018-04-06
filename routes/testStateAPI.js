@@ -20,9 +20,9 @@ var http = require("http");
 
 router.get('/',function(req,res){
     var PIN='395023';
-    var str='http://maps.googleapis.com/maps/api/geocode/json?address='+PIN+'\&sensor=true';
+    var str='http://postalpincode.in/api/pincode/'+PIN;
     var url=urlEncode.decode(str,'UTF-8');
-    
+    console.log("----ayya");
 
     var request = http.get(url, function (response) {
     // data is streamed in chunks from the server
@@ -37,9 +37,13 @@ router.get('/',function(req,res){
         console.log(buffer);
         console.log("\n");
         data = JSON.parse(buffer);
-        state = data.results[0].formatted_address;
+
+        if(data.Status=='Success')
+        {
+        state = data.PostOffice[0];
         console.log('\n\n');
-        console.log(state);
+        console.log(state.District+","+state.State);
+    }
         // extract the distance and time
         //console.log("Walking Distance: " + route.legs[0].distance.text);
         //console.log("Time: " + route.legs[0].duration.text);
