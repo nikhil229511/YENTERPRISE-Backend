@@ -17,7 +17,11 @@ router.post('/',function(req,res){
 
     var sql="SELECT * FROM login_masters WHERE username='"+username+"' and password='"+password+"'";
     connect.query(sql, function (err, result, fields) {
-      if (err) throw err;
+     // console.log(result.length)
+      if (err || result.length == 0){
+        res.writeHead(401);
+        res.end();
+      }
       res.end(JSON.stringify(result));
     });
 });
