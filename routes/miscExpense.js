@@ -11,12 +11,15 @@ var date,miscitemid,comid,amount,des,sql;
 router.get('/',function(req,res){
     var sql="SELECT * FROM misc_expenses";
     connect.query(sql, function (err, result, fields) {
-        if (err) 
-            res.end('Unsuccessful');
-        res.end(JSON.stringify(result));
+        if (err || result.length == 0){        
+            res.writeHead(401);
+            res.end();
+        }else{
+            res.end(JSON.stringify(result));
+        }
     });
 });
-router.post('/insert',function(req,res){
+router.post('/',function(req,res){
     date=req.body.date;
     miscitemid=req.body.misc_item_id;
     comid=req.body.company_id;
@@ -26,40 +29,52 @@ router.post('/insert',function(req,res){
     sql="INSERT INTO misc_expenses(date,misc_item_id,company_id,amount,description) values ('"+date+"',"+miscitemid+","+comid+","+amount+",'"+des+"')";
         console.log(sql);
         connect.query(sql, function (err, result) {
-        if (err)
-            res.end('Unsuccessful');
-        res.end("success");
+            if (err || result.length == 0){        
+                res.writeHead(401);
+                res.end();
+            }else{
+                res.writeHead(200);
+                res.end();
+            }
     });
 
 });
 
-router.post('/update',function(req,res){
+router.put('/:misc_expense_id',function(req,res){
     date=req.body.date;
     miscitemid=req.body.misc_item_id;
     comid=req.body.company_id;
     amount=req.body.amount;
     description=req.body.description;
-    misc_expense_id=req.body.misc_expense_id;
+    misc_expense_id=req.params.misc_expense_id;
     sql="UPDATE misc_expenses set date='"+date+"',misc_item_id="+miscitemid+",company_id="+comid+",amount="+amount+",description='"+description+"' WHERE misc_expense_id="+misc_expense_id+"";
         console.log(sql);
         connect.query(sql, function (err, result) {
-        if (err)
-            res.end('Unsuccessful');
-        res.end("success");
+            if (err || result.length == 0){        
+                res.writeHead(401);
+                res.end();
+            }else{
+                res.writeHead(200);
+                res.end();
+            }
     });
 
 });
 
-router.post('/delete',function(req,res){
+router.delete('/:misc_expense_id',function(req,res){
     
-    misc_expense_id=req.body.misc_expense_id;
+    misc_expense_id=req.params.misc_expense_id;
     
     sql="DELETE FROM misc_expenses WHERE misc_expense_id="+misc_expense_id+"";
         console.log(sql);
         connect.query(sql, function (err, result) {
-        if (err)
-            res.end('Unsuccessful');
-        res.end("success");
+            if (err || result.length == 0){        
+                res.writeHead(401);
+                res.end();
+            }else{
+                res.writeHead(200);
+                res.end();
+            }
     });
 
 });

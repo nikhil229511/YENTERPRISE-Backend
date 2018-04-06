@@ -17,7 +17,7 @@ router.get('/',function(req,res){
     });
 });
 
-router.post('/insert',function(req,res){
+router.post('/',function(req,res){
     name=req.body.name;
     add1=req.body.add1;
     add2=req.body.add2;
@@ -38,8 +38,8 @@ router.post('/insert',function(req,res){
     });
 });
 
-router.post('/update',function(req,res){
-    company_id=req.body.company_id;
+router.put('/:company_id',function(req,res){
+    company_id=req.params.company_id;
     name=req.body.name;
     add1=req.body.add1;
     add2=req.body.add2;
@@ -60,8 +60,8 @@ router.post('/update',function(req,res){
     });
 });
 
-router.post('/delete',function(req,res){
-    company_id=req.body.company_id;
+router.delete('/company_id',function(req,res){
+    company_id=req.params.company_id;
 
     sql="DELETE FROM company_masters WHERE company_id="+company_id+"";
         console.log(sql);
