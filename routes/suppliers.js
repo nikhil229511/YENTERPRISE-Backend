@@ -29,19 +29,18 @@ router.post('/',function(req,res){
     contactno=req.body.contactno;
     email=req.body.email;
     state=req.body.state;
-    is_customer=req.body.is_customer;
     
-        sql="INSERT INTO business_associates(name,add1,add2,PIN,state,statecode,GSTNo,contactno,email,is_customer) values ('"+name+"','"+add1+"','"+add2+"','"+PIN+"','"+state+"','"+statecode+"','"+GSTNo+"','"+contactno+"','"+email+"','"+is_customer+"')";
-        console.log(sql);
-        connect.query(sql, function (err, result) {
-            if (err || result.length == 0){        
-                res.writeHead(401);
-                res.end();
-            }else{
-                res.writeHead(200);
-                res.end();
-            }
-        });
+    sql="INSERT INTO business_associates(name,add1,add2,PIN,state,statecode,GSTNo,contactno,email,is_customer) values ('"+name+"','"+add1+"','"+add2+"','"+PIN+"','"+state+"','"+statecode+"','"+GSTNo+"','"+contactno+"','"+email+"','"+0+"')";
+    console.log(sql);
+    connect.query(sql, function (err, result) {
+        if (err || result.length == 0){        
+            res.writeHead(401);
+            res.end();
+        }else{
+            res.writeHead(200);
+            res.end();
+        }
+    });
 });
 
 router.put('/:ba_id',function(req,res){
