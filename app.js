@@ -10,7 +10,8 @@ var cors=require('cors');
 var index = require('./routes/index');
 var login = require('./routes/login.js');
 var users = require('./routes/users');
-var businessAssociates = require('./routes/businessAssociates');
+var suppliers = require('./routes/suppliers');
+var customers = require('./routes/customers');
 var company = require('./routes/companyDetail');
 var itemMaster = require('./routes/itemMaster');
 var itemDetail = require('./routes/itemDetail');
@@ -19,6 +20,7 @@ var miscIncome = require('./routes/miscIncome');
 var miscExpense = require('./routes/miscExpense');
 var transportMaster = require('./routes/transportMaster');
 var purchase = require('./routes/purchase');
+var rent = require('./routes/rent');
 
 //var testStateAPI = require('./routes/testStateAPI');
 
@@ -40,7 +42,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/login',login);
 app.use('/users', users);
-app.use('/businessAssociates', businessAssociates);
+app.use('/suppliers', suppliers);
+app.use('/customers', customers);
 app.use('/companyDetails', company);
 app.use('/itemMaster', itemMaster);
 app.use('/itemDetail', itemDetail );
@@ -49,6 +52,7 @@ app.use('/miscExpense', miscExpense);
 app.use('/miscIncome', miscIncome);
 app.use('/transportMaster', transportMaster);
 app.use('/purchase', purchase);
+app.use('/rent', rent);
 
 // app.use('/testStateAPI', testStateAPI);
 

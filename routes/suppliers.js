@@ -8,15 +8,18 @@ var bodyParser =require('body-parser');
 var sql,name,add1,add2,PIN,state_code,state,GSTNo,contactno,email,is_customer;
 
 router.get('/',function(req,res){
-    var sql="SELECT * FROM business_associates";
+    var sql="SELECT * FROM business_associates where is_customer=0";
     connect.query(sql, function (err, result, fields) {
-        if (err) 
-            res.end('Unsuccessful');
-        res.end(JSON.stringify(result));
+        if (err || result.length == 0){        
+            res.writeHead(401);
+            res.end();
+        }
+        else
+            res.end(JSON.stringify(result));
     });
 });
 
-router.post('/insert',function(req,res){
+router.post('/',function(req,res){
     name=req.body.name;
     add1=req.body.add1;
     add2=req.body.add2;
@@ -31,14 +34,18 @@ router.post('/insert',function(req,res){
         sql="INSERT INTO business_associates(name,add1,add2,PIN,state,statecode,GSTNo,contactno,email,is_customer) values ('"+name+"','"+add1+"','"+add2+"','"+PIN+"','"+state+"','"+statecode+"','"+GSTNo+"','"+contactno+"','"+email+"','"+is_customer+"')";
         console.log(sql);
         connect.query(sql, function (err, result) {
-        if (err) 
-            res.end('Unsuccessful');
-        res.end("success");
+            if (err || result.length == 0){        
+                res.writeHead(401);
+                res.end();
+            }else{
+                res.writeHead(200);
+                res.end();
+            }
         });
 });
 
-router.post('/update',function(req,res){
-    ba_id=req.body.ba_id;
+router.put('/:ba_id',function(req,res){
+    ba_id=req.params.ba_id;
     name=req.body.name;
     add1=req.body.add1;
     add2=req.body.add2;
@@ -53,21 +60,28 @@ router.post('/update',function(req,res){
         sql="UPDATE business_associates set name='"+name+"',add1='"+add1+"',add2='"+add2+"',PIN='"+PIN+"',state='"+state+"',statecode='"+statecode+"',GSTNo='"+GSTNo+"',contactno='"+contactno+"',email='"+email+"',is_customer="+is_customer+" WHERE ba_id="+ba_id+"";
         console.log(sql);
         connect.query(sql, function (err, result) {
-        if (err) 
-            res.end('Unsuccessful');
-        res.end("success");
+            if (err || result.length == 0){        
+                res.writeHead(401);
+                res.end();
+            }else{
+                res.writeHead(200);
+                res.end();
+            }
         });
 });
 
-router.post('/delete',function(req,res){
-    ba_id=req.body.ba_id;
-    
+router.delete('/:ba_id',function(req,res){
+    ba_id=req.params.ba_id;    
     sql="DELETE FROM business_associates WHERE ba_id="+ba_id+"";
     console.log(sql);
     connect.query(sql, function (err, result) {
-    if (err) 
-        res.end('Unsuccessful');
-    res.end("success");
+        if (err || result.length == 0){        
+            res.writeHead(401);
+            res.end();
+        }else{
+            res.writeHead(200);
+            res.end();
+        }
     });
 });
 

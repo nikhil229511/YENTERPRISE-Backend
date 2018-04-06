@@ -10,7 +10,7 @@ var async=require('async');
 var id,sql,invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_credit;
 
 router.get('/',function(req,res){
-    var sql="SELECT * FROM purchase_masters";
+    var sql="SELECT * FROM rent_masters";
     connect.query(sql, function (err, result, fields) {
         if (err) throw err;
         res.end(JSON.stringify(result));
@@ -18,7 +18,7 @@ router.get('/',function(req,res){
 });
 
 router.get('/loadBA',function(req,res){
-    var sql="SELECT ba_id,name FROM business_associates WHERE is_customer=0";
+    var sql="SELECT ba_id,name FROM business_associates WHERE is_customer=1";
     connect.query(sql, function (err, result, fields) {
         if (err) throw err;
         res.end(JSON.stringify(result));
