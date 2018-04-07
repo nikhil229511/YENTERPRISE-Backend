@@ -11,13 +11,16 @@ var sql,name,add1,add2,PIN,state_code,state,GSTNo,contactno,email;
 router.get('/',function(req,res){
     var sql="SELECT * FROM transport_masters";
     connect.query(sql, function (err, result, fields) {
-        if (err)
-            res.end('Unsuccessful');
-        res.end(JSON.stringify(result));
+        if (err || result.length == 0){        
+            res.writeHead(401);
+            res.end();
+        }else{
+            res.end(JSON.stringify(result));
+        }
     });
 });
 
-router.post('/insert',function(req,res){
+router.post('/',function(req,res){
     name=req.body.name;
     add1=req.body.add1;
     add2=req.body.add2;
@@ -31,13 +34,17 @@ router.post('/insert',function(req,res){
     sql="INSERT INTO transport_masters(name,add1,add2,PIN,state,statecode,GSTNo,contactno,email) values ('"+name+"','"+add1+"','"+add2+"','"+PIN+"','"+state+"','"+statecode+"','"+GSTNo+"','"+contactno+"','"+email+"')";
         console.log(sql);
         connect.query(sql, function (err, result) {
-        if (err)
-            res.end('Unsuccessful');
-        res.end("success");
+            if (err || result.length == 0){        
+                res.writeHead(401);
+                res.end();
+            }else{
+                res.writeHead(200);
+                res.end();
+            }
     });
 });
 
-router.post('/update',function(req,res){
+router.put('/:transport_id',function(req,res){
     name=req.body.name;
     add1=req.body.add1;
     add2=req.body.add2;
@@ -47,26 +54,32 @@ router.post('/update',function(req,res){
     GSTNo=req.body.GSTNo;
     contactno=req.body.contactno;
     email=req.body.email;
-    transport_id=req.body.transport_id;
+    transport_id=req.params.transport_id;
     
     sql="UPDATE transport_masters set name='"+name+"',add1='"+add1+"',add2='"+add2+"',PIN='"+PIN+"',state='"+state+"',statecode='"+statecode+"',GSTNo='"+GSTNo+"',contactno='"+contactno+"',email='"+email+"' WHERE transport_id="+transport_id+"";
-        console.log(sql);
-        connect.query(sql, function (err, result) {
-        if (err)
-            res.end('Unsuccessful');
-        res.end("success");
+    connect.query(sql, function (err, result) {
+        if (err || result.length == 0){        
+            res.writeHead(401);
+            res.end();
+        }else{
+            res.writeHead(200);
+            res.end();
+        }
     });
 });
 
-router.post('/delete',function(req,res){
-    transport_id=req.body.transport_id;
+router.delete('/:transport_id',function(req,res){
+    transport_id=req.params.transport_id;
     
     sql="DELETE FROM transport_masters WHERE transport_id="+transport_id+"";
-        console.log(sql);
-        connect.query(sql, function (err, result) {
-        if (err)
-            res.end('Unsuccessful');    
-        res.end("success");
+    connect.query(sql, function (err, result) {
+        if (err || result.length == 0){        
+            res.writeHead(401);
+            res.end();
+        }else{
+            res.writeHead(200);
+            res.end();
+        }
     });
 });
 module.exports = router;

@@ -12,6 +12,7 @@ router.get('/',function(req,res){
     var sql="SELECT * FROM login_masters";
     connect.query(sql, function (err, result, fields) {
        // console.log(result.length);
+       res.contentType('application/json')
         if (err || result.length == 0){
         
         res.writeHead(401);

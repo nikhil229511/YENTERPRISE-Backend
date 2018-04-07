@@ -9,6 +9,7 @@ var sql,name,add1,add2,PIN,state_code,state,GSTNo,contactno,email,is_customer;
 
 router.get('/',function(req,res){
     var sql="SELECT * FROM business_associates where is_customer=0";
+    res.contentType('application/json')
     connect.query(sql, function (err, result, fields) {
         if (err || result.length == 0){        
             res.writeHead(401);
@@ -54,9 +55,8 @@ router.put('/:ba_id',function(req,res){
     contactno=req.body.contactno;
     email=req.body.email;
     state=req.body.state;
-    is_customer=req.body.is_customer;
     
-        sql="UPDATE business_associates set name='"+name+"',add1='"+add1+"',add2='"+add2+"',PIN='"+PIN+"',state='"+state+"',statecode='"+statecode+"',GSTNo='"+GSTNo+"',contactno='"+contactno+"',email='"+email+"',is_customer="+is_customer+" WHERE ba_id="+ba_id+"";
+        sql="UPDATE business_associates set name='"+name+"',add1='"+add1+"',add2='"+add2+"',PIN='"+PIN+"',state='"+state+"',statecode='"+statecode+"',GSTNo='"+GSTNo+"',contactno='"+contactno+"',email='"+email+"' WHERE ba_id="+ba_id+"";
         console.log(sql);
         connect.query(sql, function (err, result) {
             if (err || result.length == 0){        
