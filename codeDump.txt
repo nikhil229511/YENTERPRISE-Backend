@@ -55,3 +55,50 @@ model.loginMaster().findAll({ where: { username: username, password:password } }
   }
 });
 */
+
+
+
+//jayesh bro
+
+/*router.post('/invoice_no/:invoice_no',function(req,res){
+    var sql="SELECT * FROM purchase_master WHERE invoice_no="+req.params.invoice_no+"";
+    var sql2="SELECT * FROM cash_flow WHERE invoice_no="+req.params.invoice_no+"";
+
+                //ye kaam ka hai
+
+    connect.query(sql, function (err, result, fields) {
+        if (err || result.length == 0){
+            res.writeHead(401);
+            res.end();
+        }else{
+            res.writeHead(200);
+            res.write(JSON.stringify(result));
+        }
+    });
+
+
+    //------ye hai step 1
+        // yaha karna hai apne ko pura price calculate
+        // or apne ko cash flow mai jo paisa aaya usko calculate karna hai
+        // amount = pura price - pura paisa aaya;
+        // phir apne ko saare bills or ye amount bhejna hai
+    
+    //------khatam          
+
+    //-----ye hai step 2 (request)
+        // phir agar usko bill dekhne ki khujli hai to ek or request aayegi
+        // usme saare bill ki details + saare item ki ek ek detail bhi jaani chahiye
+    //-----samjha ??
+
+    // nahi toh call karna mai khana khane jaa raha hun
+    // mai 9:15 tal aajayega
+    // connect.query(sql2, function (err, result, fields) {
+    //     if (err || result.length == 0){
+    //         res.writeHead(401);
+    //         res.end();
+    //     }else{
+    //         res.end(JSON.stringify(result));
+    //     }
+    // });
+});
+

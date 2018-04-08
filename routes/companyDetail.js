@@ -60,7 +60,7 @@ router.put('/:company_id',function(req,res){
     });
 });
 
-router.delete('/company_id',function(req,res){
+router.delete('/:company_id',function(req,res){
     company_id=req.params.company_id;
 
     sql="DELETE FROM company_masters WHERE company_id="+company_id+"";
