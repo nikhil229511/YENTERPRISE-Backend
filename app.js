@@ -21,7 +21,8 @@ var miscExpense = require('./routes/miscExpense');
 var transportMaster = require('./routes/transportMaster');
 var purchase = require('./routes/purchase');
 var rent = require('./routes/rent');
-
+var gBill = require('./operation/generateBill');
+var billDetail = require('./operation/billDetail');
 //var testStateAPI = require('./routes/testStateAPI');
 
 var app = express();
@@ -56,8 +57,13 @@ app.use('/miscIncome', miscIncome);
 app.use('/transportMaster', transportMaster);
 app.use('/purchase', purchase);
 app.use('/rent', rent);
+<<<<<<< HEAD
 
  app.use('/testStateAPI', testStateAPI);
+=======
+app.use('/generateBill', gBill);
+app.use('/billDetail', billDetail);
+>>>>>>> a6011cb8b197b3498040412e4bce4717347bdbeb
 
 
 // catch 404 and forward to error handler

@@ -17,7 +17,7 @@ router.get('/',function(req,res){
     });
 });
 
-router.get('/loadBA',function(req,res){
+/*router.get('/ba',function(req,res){
     var sql="SELECT ba_id,name FROM business_associates WHERE is_customer=0";
     connect.query(sql, function (err, result, fields) {
         if (err) throw err;
@@ -25,15 +25,15 @@ router.get('/loadBA',function(req,res){
     });
 });
 
-router.get('/loadCOMPANY',function(req,res){
+router.get('/company',function(req,res){
     var sql="SELECT company_id,name FROM company_masters";
     connect.query(sql, function (err, result, fields) {
         if (err) throw err;
         res.end(JSON.stringify(result));
     });
-});
+});*/
 
-router.post('/insert',function(req,res){
+router.post('/',function(req,res){
     
     invoice_no=req.body.invoice_no;
     date=req.body.date;
@@ -93,7 +93,7 @@ router.post('/insert',function(req,res){
 
 
 
-router.post('/delete',function(req,res){
+router.delete('/:purchase_master_id',function(req,res){
     purchase_master_id=req.body.purchase_master_id;
     
     async.series([

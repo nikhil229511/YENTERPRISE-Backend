@@ -9,6 +9,7 @@ var sql,name,add1,add2,PIN,state_code,state,GSTNo,contactno,email,is_customer;
 
 router.get('/',function(req,res){
     var sql="SELECT * FROM business_associates where is_customer=0";
+    res.contentType('application/json')
     connect.query(sql, function (err, result, fields) {
         if (err || result.length == 0){        
             res.writeHead(401);

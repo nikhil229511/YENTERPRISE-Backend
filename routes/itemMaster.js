@@ -10,9 +10,11 @@ var sql,name,hsn,description;
 
 router.get('/',function(req,res){
     var sql="SELECT * FROM item_masters";
+    res.contentType('application/json')
     connect.query(sql, function (err, result, fields) {
         if (err || result.length == 0){        
             res.writeHead(401);
+            
             res.end();
         }else{
             res.end(JSON.stringify(result));

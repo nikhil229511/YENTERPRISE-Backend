@@ -9,7 +9,8 @@ var bodyParser =require('body-parser');
 var item_detail_name,item_master_id,total_items,damaged_items,description;
 
 router.get('/',function(req,res){
-    var sql="SELECT * FROM item_details";
+    var sql="SELECT item_details.*, item_masters.item_master_name,item_masters.hsn_code from item_details JOIN item_masters on item_details.item_master_id=item_masters.item_master_id";
+    res.contentType('application/json')
     connect.query(sql, function (err, result, fields) {
         if (err || result.length == 0){        
             res.writeHead(401);
