@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 var cors=require('cors');
 
 //include js files
-var index = require('./routes/index');
 var login = require('./routes/login.js');
 var users = require('./routes/users');
 var suppliers = require('./routes/suppliers');
@@ -23,7 +22,8 @@ var purchase = require('./routes/purchase');
 var rent = require('./routes/rent');
 var gBill = require('./operation/generateBill');
 var billDetail = require('./operation/billDetail');
-//var testStateAPI = require('./routes/testStateAPI');
+var dispatch = require('./routes/dispatch');
+var Return =  require('./routes/return');
 
 var app = express();
 app.use(cors());
@@ -43,7 +43,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //link page name to js page
-app.use('/', index);
+//app.use('/', index);
 app.use('/login',login);
 app.use('/users', users);
 app.use('/suppliers', suppliers);
@@ -59,6 +59,8 @@ app.use('/purchase', purchase);
 app.use('/rent', rent);
 app.use('/generateBill', gBill);
 app.use('/billDetail', billDetail);
+app.use('/dispatch', dispatch);
+app.use('/return', Return);
 
 
 
