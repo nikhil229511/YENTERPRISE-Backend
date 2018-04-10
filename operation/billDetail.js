@@ -122,18 +122,19 @@ function calculateRent(){
     var days,ditemid,dqty,ritemid,rqty,rate;
     //var days=calculateDays(resObj.dispatch[0].date,resObj.return[0].date);
     var total=0;
-var return_id=0;
-    for(var i=resObj.dispatch.length-1;i>=0;i--){
-
-        for(var j=resObj.dispatch[i].dispatchedItems.length-1 ;j>=0;j--){
-            
-            
-            if(resObj.dispatch[i].dispatchedItems[j].item_detail_id==resObj.return[return_id].returnedItems[0].item_detail_id){
+    var returnItem_id = 0;
+    var return_id=0;
+    var i=0,j=0;
+    for(i=resObj.dispatch.length-1;i>=0;i--)
+    {        
+        for(j=resObj.dispatch[i].dispatchedItems.length-1 ;j>=0;j--){
+            // resObj.return[return_id].returnedItems[returnItem_id].item_detail_id
+            if(resObj.dispatch[i].dispatchedItems[j].item_detail_id==resObj.return[return_id].returnedItems[returnItem_id].item_detail_id){
                 days=calculateDays(resObj.dispatch[i].date,resObj.return[return_id].date);
-                rate=resObj.rent[0].rentedItems[0].rate;
+                rate=resObj.rent[returnItem_id].rentedItems[returnItem_id].rate;
                 
-                rqty = (resObj.return[return_id].returnedItems[0].quantity)>resObj.dispatch[i].dispatchedItems[j].quantity?resObj.dispatch[i].dispatchedItems[j].quantity:resObj.return[return_id].returnedItems[0].quantity;
-                resObj.return[return_id].returnedItems[0].quantity -= rqty;
+                rqty = (resObj.return[return_id].returnedItems[returnItem_id].quantity)>resObj.dispatch[i].dispatchedItems[j].quantity?resObj.dispatch[i].dispatchedItems[j].quantity:resObj.return[return_id].returnedItems[returnItem_id].quantity;
+                resObj.return[return_id].returnedItems[returnItem_id].quantity -= rqty;
                 resObj.dispatch[i].dispatchedItems[j].quantity -= rqty;
                 // console.log(resObj.return[return_id].returnedItems[0].quantity+"-------"+resObj.dispatch[i].dispatchedItems[j].quantity+"------"+rqty);
                  if(resObj.dispatch[i].dispatchedItems[j].quantity > 0)
@@ -142,23 +143,26 @@ var return_id=0;
                 console.log('rent: '+rent);
                 console.log('days: '+days);
                 total+=rent;
-                
-            }          
-            if(resObj.return[return_id].returnedItems[0].quantity <= 0)
-            {
-                if(return_id < (resObj.return.length-1))
-                    return_id++;
+                if(resObj.return[return_id].returnedItems[returnItem_id].quantity <= 0)
+                {
+                    if(return_id < (resObj.return.length-1))
+                        return_id++;
                     
-                else
+                    else
                     {
                         console.log("Total bill : "+total);
-                        return true;
+                        i = -1;
+                        j = -1;
+                        //return true;
                     }
                     
-            }  
+                }
+                
+            }          
+              
         }
     }
-    
+ 
     
     
     
