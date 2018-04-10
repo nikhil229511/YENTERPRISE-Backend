@@ -122,69 +122,50 @@ function calculateRent(){
     var days,ditemid,dqty,ritemid,rqty,rate;
     //var days=calculateDays(resObj.dispatch[0].date,resObj.return[0].date);
     var total=0;
-var return_id=0;
-    //itrate through all the dispatch main items
-    for(var i=resObj.dispatch.length-1;i>=0;i--){
-        //itrate throush dispatched item list in each bill of dispatch
-        for(var j=resObj.dispatch[i].dispatchedItems.length-1 ;j>=0;j--){
-            
-            //check for item detail
-            if(resObj.dispatch[i].dispatchedItems[j].item_detail_id==resObj.return[return_id].returnedItems[0].item_detail_id){
-                
+    var returnItem_id = 0;
+    var return_id=0;
+    var i=0,j=0;
+    for(i=resObj.dispatch.length-1;i>=0;i--)
+    {        
+        for(j=resObj.dispatch[i].dispatchedItems.length-1 ;j>=0;j--){            
+            // resObj.return[return_id].returnedItems[returnItem_id].item_detail_id
+            if(resObj.dispatch[i].dispatchedItems[j].item_detail_id==resObj.return[return_id].returnedItems[returnItem_id].item_detail_id){
                 days=calculateDays(resObj.dispatch[i].date,resObj.return[return_id].date);
-                rate=resObj.rent[returnItem_id].rentedItems[returnItem_id].rate;
-                
+                rate=resObj.rent[return_id].rentedItems[returnItem_id].rate;
+                console.log("\n\n---return Id : "+return_id+"\n---return Item id : "+returnItem_id+"\n---Dispatch Id : "+i+"\n---Dispatch Item Id : "+j);
                 rqty = (resObj.return[return_id].returnedItems[returnItem_id].quantity)>resObj.dispatch[i].dispatchedItems[j].quantity?resObj.dispatch[i].dispatchedItems[j].quantity:resObj.return[return_id].returnedItems[returnItem_id].quantity;
                 resObj.return[return_id].returnedItems[returnItem_id].quantity -= rqty;
-                //set rqty min of diapatched quantity and returned quantity
-                rqty = (resObj.return[return_id].returnedItems[0].quantity)>resObj.dispatch[i].dispatchedItems[j].quantity?resObj.dispatch[i].dispatchedItems[j].quantity:resObj.return[return_id].returnedItems[0].quantity;
-                
-                //subtract returned quantity from both returned and dispatch bill detail.
-                resObj.return[return_id].returnedItems[0].quantity -= rqty;
                 resObj.dispatch[i].dispatchedItems[j].quantity -= rqty;
-
                 // console.log(resObj.return[return_id].returnedItems[0].quantity+"-------"+resObj.dispatch[i].dispatchedItems[j].quantity+"------"+rqty);
-                
-                //if dispatched quantity is not yet returned increment j to 
-                //again search in same dispatch bill
-                if(resObj.dispatch[i].dispatchedItems[j].quantity > 0)
-                    //i++ should be there?
-                    j++;
+                 if(resObj.dispatch[i].dispatchedItems[j].quantity > 0)
+                     j++;
                 var rent=rate*days*rqty;
                 console.log('rent: '+rent);
                 console.log('days: '+days);
                 total+=rent;
                 if(resObj.return[return_id].returnedItems[returnItem_id].quantity <= 0)
                 {
-                    if(return_id < (resObj.return.length-1))
-                        return_id++;
-                    
-                    else
+                    if(returnItem_id < resObj.return[return_id].returnedItems.length-1)
                     {
-                        console.log("Total bill : "+total);
-                        i = -1;
-                        j = -1;
-                        //return true;
+                        returnItem_id++;
+                        j=resObj.dispatch[resObj.dispatch.length-1].dispatchedItems.length;
+                        i=resObj.dispatch.length-1;
                     }
-                    
+                    else if(returnItem_id<resObj.return[return_id].length-1 && return_id < (resObj.return.length-1))
+                    {
+                                return_id++; 
+                                returnItem_id=0;                                          
+                    }
+                    else
+                        {                            
+                            i = -1;
+                            j = -1;
+                            console.log("Total bill : "+total);
+                            return true;
+                        }                    
                 }
-                
             }          
               
-                
-            }  
-            //if return item is 0 i.e. all items has been returned        
-            if(resObj.return[return_id].returnedItems[0].quantity <= 0)
-            {
-                //if return bill are still available till date 
-                //incement return bill counter else print bill amount.
-                if(return_id < (resObj.return.length-1))
-                    return_id++;                    
-                else{
-                    console.log("Total bill : "+total);
-                    return true;
-                }                    
-            }  
         }
     }
  
