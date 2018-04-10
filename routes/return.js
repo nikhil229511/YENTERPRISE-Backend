@@ -10,7 +10,7 @@ var async=require('async');
 var id,sql,invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_credit,status;
 
 router.get('/',function(req,res){
-    var sql="SELECT * FROM rent_masters";
+    var sql="SELECT * FROM return_master_histories";
     connect.query(sql, function (err, result, fields) {
         if (err || result.length == 0){        
             res.writeHead(401);
@@ -41,16 +41,7 @@ router.post('/',function(req,res){
     
     invoice_no=req.body.invoice_no;
     date=req.body.date;
-    ba_id=req.body.ba_id;
-    company_id=req.body.company_id;
-    amount=req.body.amount;
-    taxes=req.body.taxes;
-    loading_charges=req.body.loading_charges;
-    unloading_charges=req.body.unloading_charges;
-    transport_charges=req.body.transport_charges;
-    is_credit=req.body.is_credit;
-    status=req.body.status;
-    //console.log(req.body.status);
+    
     async.series([
         function(callback){
             sql="START TRANSACTION";
@@ -63,7 +54,7 @@ router.post('/',function(req,res){
             });
         },
         function(callback){
-            sql="INSERT INTO rent_masters(invoice_no,date,ba_id,company_id,amount,taxes,loading_charges,unloading_charges,transport_charges,is_credit,status) values ('"+invoice_no+"','"+date+"',"+ba_id+","+company_id+","+amount+","+taxes+","+loading_charges+","+unloading_charges+","+transport_charges+","+is_credit+",'"+status+"');";
+            sql="INSERT INTO return_master_histories (invoice_no,date) values ('"+invoice_no+"','"+date+"');";
             connect.query(sql, function (err, result) {
                 if (err){        
                     console.log(err);
@@ -78,7 +69,7 @@ router.post('/',function(req,res){
         function(callback){
             
             req.body.items.forEach(item => {
-                sqlSub="INSERT INTO rent_details(rent_master_id,item_detail_id,rate,quantity,cgst,sgst,igst) values ("+id+","+item.item_detail_id+","+item.rate+","+item.quantity+","+item.cgst+","+item.sgst+","+item.igst+");";
+                sqlSub="INSERT INTO return_detail_histories(return_master_id,item_detail_id,quantity,damaged_quantity) values ("+id+","+item.item_detail_id+","+item.quantity+","+item.damaged_quantity+");";
                 connect.query(sqlSub, function (err, result) {
                     if (err){        
                         res.writeHead(401);
@@ -105,19 +96,10 @@ router.post('/',function(req,res){
 });
 
 
-router.put('/:rent_master_id',function(req,res){
-    rent_master_id=req.params.rent_master_id;
+router.put('/:return_master_id',function(req,res){
+    return_master_id=req.params.return_master_id;
     invoice_no=req.body.invoice_no;
     date=req.body.date;
-    ba_id=req.body.ba_id;
-    company_id=req.body.company_id;
-    amount=req.body.amount;
-    taxes=req.body.taxes;
-    loading_charges=req.body.loading_charges;
-    unloading_charges=req.body.unloading_charges;
-    transport_charges=req.body.transport_charges;
-    is_credit=req.body.is_credit;
-    status=req.body.status;
     
     async.series([
         function(callback){
@@ -132,7 +114,7 @@ router.put('/:rent_master_id',function(req,res){
             });
         },
         function(callback){
-            sql="UPDATE rent_masters SET invoice_no='"+invoice_no+"',date='"+date+"',ba_id="+ba_id+",company_id="+company_id+",amount="+amount+", taxes="+taxes+",loading_charges="+loading_charges+",unloading_charges="+unloading_charges+",transport_charges="+transport_charges+",is_credit="+is_credit+",status='"+status+"' WHERE rent_master_id="+rent_master_id+"";
+            sql="UPDATE return_master_histories SET invoice_no='"+invoice_no+"',date='"+date+"' WHERE return_master_id="+return_master_id+"";
             connect.query(sql, function (err, result) {
                 if (err){        
                     res.writeHead(401);
@@ -144,9 +126,10 @@ router.put('/:rent_master_id',function(req,res){
         function(callback){
             
             req.body.items.forEach(item => {
-                sqlSub="UPDATE rent_details SET rent_master_id="+rent_master_id+",item_detail_id="+item.item_detail_id+",rate="+item.rate+",quantity="+item.quantity+",cgst="+item.cgst+",sgst="+item.sgst+",igst="+item.igst+" WHERE rent_master_id="+rent_master_id+" AND item_detail_id="+item.item_detail_id+";";
+                sqlSub="UPDATE return_detail_histories SET return_master_id="+return_master_id+",item_detail_id="+item.item_detail_id+",quantity="+item.quantity+",damaged_quantity="+item.damaged_quantity+" WHERE return_master_id="+return_master_id+" AND item_detail_id="+item.item_detail_id+";";
                 connect.query(sqlSub, function (err, result) {
-                    if (err){        
+                    if (err){
+                        console.log(err);        
                         res.writeHead(401);
                         res.end();
                     }                    
@@ -156,7 +139,6 @@ router.put('/:rent_master_id',function(req,res){
         },
         function(callback){
             sqlSub="COMMIT";
-            console.log(sqlSub);
             connect.query(sqlSub, function (err, result) {
                 if (err){        
                     res.writeHead(401);
@@ -173,8 +155,8 @@ router.put('/:rent_master_id',function(req,res){
 
 
 
-router.delete('/:rent_master_id',function(req,res){
-    rent_master_id=req.params.rent_master_id;
+router.delete('/:return_master_id',function(req,res){
+    return_master_id=req.params.return_master_id;
     
     async.series([
         function(callback){
@@ -190,7 +172,7 @@ router.delete('/:rent_master_id',function(req,res){
             });
         },
         function(callback){    
-            sqlSub="DELETE FROM rent_details WHERE rent_master_id="+rent_master_id+";";
+            sqlSub="DELETE FROM return_detail_histories WHERE return_master_id="+return_master_id+";";
             connect.query(sqlSub, function (err, result) {
                 if (err){        
                     res.writeHead(401);
@@ -201,7 +183,7 @@ router.delete('/:rent_master_id',function(req,res){
         },
 
         function(callback){
-            sql="DELETE FROM rent_masters WHERE rent_master_id="+rent_master_id+";";
+            sql="DELETE FROM return_master_histories WHERE return_master_id="+return_master_id+";";
             connect.query(sql, function (err, result) {
                 if (err){        
                     res.writeHead(401);

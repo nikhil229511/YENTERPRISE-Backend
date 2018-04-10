@@ -12,8 +12,12 @@ var id,sql,invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_cre
 router.get('/',function(req,res){
     var sql="SELECT * FROM purchase_masters";
     connect.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        res.end(JSON.stringify(result));
+        if (err || result.length == 0){        
+            res.writeHead(401);
+            res.end();
+        }else{
+            res.end(JSON.stringify(result));
+        }
     });
 });
 
@@ -46,34 +50,106 @@ router.post('/',function(req,res){
     transport_charges=req.body.transport_charges;
     is_credit=req.body.is_credit;
     
-    
-    
     async.series([
         function(callback){
             sql="START TRANSACTION";
-            console.log(sql);
             connect.query(sql, function (err, result) {
-                if (err) throw err;
-                callback(null,'succes1');    
+                if (err){        
+                    res.writeHead(401);
+                    res.end();
+                }else
+                    callback(null,'succes1');    
             });
         },
         function(callback){
             sql="INSERT INTO purchase_masters(invoice_no,date,ba_id,company_id,amount,taxes,loading_charges,unloading_charges,transport_charges,is_credit) values ('"+invoice_no+"','"+date+"',"+ba_id+","+company_id+","+amount+","+taxes+","+loading_charges+","+unloading_charges+","+transport_charges+","+is_credit+");";
-            console.log(sql);
             connect.query(sql, function (err, result) {
-                if (err) throw err;
-                id=result.insertId;
-                callback(null,'succes2');    
+                if (err){        
+                    res.writeHead(401);
+                    res.end();
+                }else{
+                    id=result.insertId;
+                    callback(null,'succes2');    
+                }
             });
         },
         function(callback){
             
             req.body.items.forEach(item => {
                 sqlSub="INSERT INTO purchase_details(purchase_master_id,item_detail_id,rate,quantity,cgst,sgst,igst) values ("+id+","+item.item_detail_id+","+item.rate+","+item.quantity+","+item.cgst+","+item.sgst+","+item.igst+");";
-                console.log("\n"+sqlSub); 
                 connect.query(sqlSub, function (err, result) {
-                    if (err) throw err;
+                    if (err){        
+                        res.writeHead(401);
+                        res.end();
+                    }
                 });
+            });
+            callback(null,'success3');
+        },
+        function(callback){
+            sqlSub="COMMIT";
+            connect.query(sqlSub, function (err, result) {
+                if (err){        
+                    res.writeHead(401);
+                    res.end();
+                }else
+                    callback(null,'success4');
+            });
+        }
+    ],
+    function(){
+        res.end('success');
+    });
+});
+
+
+router.put('/:purchase_master_id',function(req,res){
+    purchase_master_id=req.params.purchase_master_id;
+    invoice_no=req.body.invoice_no;
+    date=req.body.date;
+    ba_id=req.body.ba_id;
+    company_id=req.body.company_id;
+    amount=req.body.amount;
+    taxes=req.body.taxes;
+    loading_charges=req.body.loading_charges;
+    unloading_charges=req.body.unloading_charges;
+    transport_charges=req.body.transport_charges;
+    is_credit=req.body.is_credit;
+    
+    async.series([
+        function(callback){
+            sql="START TRANSACTION";
+            console.log(sql);
+            connect.query(sql, function (err, result) {
+                if (err){        
+                    res.writeHead(401);
+                    res.end();
+                }else
+                    callback(null,'succes1');
+            });
+        },
+        function(callback){
+            sql="UPDATE purchase_masters SET invoice_no='"+invoice_no+"',date='"+date+"',ba_id="+ba_id+",company_id="+company_id+",amount="+amount+", taxes="+taxes+",loading_charges="+loading_charges+",unloading_charges="+unloading_charges+",transport_charges="+transport_charges+",is_credit="+is_credit+" WHERE purchase_master_id="+purchase_master_id+"";
+            console.log(sql);
+            connect.query(sql, function (err, result) {
+                if (err){        
+                    res.writeHead(401);
+                    res.end();
+                }else
+                    callback(null,'succes1');
+            });
+        },
+        function(callback){
+            
+            req.body.items.forEach(item => {
+                sqlSub="UPDATE purchase_details SET purchase_master_id="+purchase_master_id+",item_detail_id="+item.item_detail_id+",rate="+item.rate+",quantity="+item.quantity+",cgst="+item.cgst+",sgst="+item.sgst+",igst="+item.igst+" WHERE purchase_master_id="+purchase_master_id+" AND item_detail_id="+item.item_detail_id+";";
+                console.log(sqlSub); 
+                connect.query(sqlSub, function (err, result) {
+                    if (err){        
+                        res.writeHead(401);
+                        res.end();
+                    }                        
+                });                
             });
             callback(null,'success3');
         },
@@ -81,8 +157,11 @@ router.post('/',function(req,res){
             sqlSub="COMMIT";
             console.log(sqlSub);
             connect.query(sqlSub, function (err, result) {
-                if (err) throw err;
-                callback(null,'success4');
+                if (err){        
+                    res.writeHead(401);
+                    res.end();
+                }else
+                    callback(null,'succes1');
             });
         }
     ],
@@ -101,33 +180,46 @@ router.delete('/:purchase_master_id',function(req,res){
             sql="START TRANSACTION";
             console.log(sql);
             connect.query(sql, function (err, result) {
-                if (err) throw err;
-                callback(null,'succes1');    
+                if (err){        
+                    res.writeHead(401);
+                    res.end();
+                }else{
+                    callback(null,'succes1');        
+                }                
             });
         },
-        function(callback){
-            
+        function(callback){    
             sqlSub="DELETE FROM purchase_details WHERE purchase_master_id="+purchase_master_id+";";
             console.log("\n"+sqlSub); 
             connect.query(sqlSub, function (err, result) {
-                if (err) throw err;
-            });
-            callback(null,'success3');
+                if (err){        
+                    res.writeHead(401);
+                    res.end();
+                }else
+                callback(null,'success3');
+            });            
         },
+
         function(callback){
             sql="DELETE FROM purchase_masters WHERE purchase_master_id="+purchase_master_id+";";
             console.log(sql);
             connect.query(sql, function (err, result) {
-                if (err) throw err;
-                callback(null,'succes2');    
+                if (err){        
+                    res.writeHead(401);
+                    res.end();
+                }else
+                callback(null,'success4');
             });
         },
         function(callback){
             sqlSub="COMMIT";
             console.log(sqlSub);
             connect.query(sqlSub, function (err, result) {
-                if (err) throw err;
-                callback(null,'success4');
+                if (err){        
+                    res.writeHead(401);
+                    res.end();
+                }else
+                callback(null,'success3');
             });
         }
     ],
