@@ -131,9 +131,15 @@ function calculateRent(){
             // resObj.return[return_id].returnedItems[returnItem_id].item_detail_id
             if(resObj.dispatch[i].dispatchedItems[j].item_detail_id==resObj.return[return_id].returnedItems[returnItem_id].item_detail_id){
                 days=calculateDays(resObj.dispatch[i].date,resObj.return[return_id].date);
-                rate=resObj.rent[return_id].rentedItems[returnItem_id].rate;
+                var rate=0;
+                resObj.rent[0].rentedItems.forEach(temp=>{
+                    if(temp.item_detail_id==resObj.dispatch[i].dispatchedItems[j].item_detail_id)
+                        rate=temp.rate;
+                });                
+                        
                 console.log("\n\n---return Id : "+return_id+"\n---return Item id : "+returnItem_id+"\n---Dispatch Id : "+i+"\n---Dispatch Item Id : "+j);
-                rqty = (resObj.return[return_id].returnedItems[returnItem_id].quantity)>resObj.dispatch[i].dispatchedItems[j].quantity?resObj.dispatch[i].dispatchedItems[j].quantity:resObj.return[return_id].returnedItems[returnItem_id].quantity;
+                                
+                rqty = (resObj.return[return_id].returnedItems[returnItem_id].quantity)>resObj.dispatch[i].dispatchedItems[j].quantity?resObj.dispatch[i].dispatchedItems[j].quantity : resObj.return[return_id].returnedItems[returnItem_id].quantity;
                 resObj.return[return_id].returnedItems[returnItem_id].quantity -= rqty;
                 resObj.dispatch[i].dispatchedItems[j].quantity -= rqty;
                 // console.log(resObj.return[return_id].returnedItems[0].quantity+"-------"+resObj.dispatch[i].dispatchedItems[j].quantity+"------"+rqty);
@@ -160,16 +166,28 @@ function calculateRent(){
                         {                            
                             i = -1;
                             j = -1;
-                            console.log("Total bill : "+total);
-                            return true;
+                            console.log("Total bill of returned items : "+ total);
                         }                    
                 }
-            }          
-              
+            }                        
         }
     }
  
-    
+var PendingItemAmount=0;
+    for(i=resObj.dispatch.length-1;i>=0;i--)
+    {        
+        for(j=resObj.dispatch[i].dispatchedItems.length-1 ;j>=0;j--){
+            var rate;
+            days=calculateDays(resObj.dispatch[i].date,new Date((new Date().getFullYear())+"-"+((new Date().getMonth()+1))+"-"+new Date().getDate()));
+            resObj.rent[0].rentedItems.forEach(temp=>{
+                if(temp.item_detail_id===resObj.dispatch[i].dispatchedItems[j].item_detail_id)
+                    rate=temp.rate;
+            });
+            console.log("---"+rate+"---"+(days)+"------"+resObj.dispatch[i].dispatchedItems[j].quantity+"---"+(rate*days*(resObj.dispatch[i].dispatchedItems[j].quantity)));
+            PendingItemAmount+=rate*days*(resObj.dispatch[i].dispatchedItems[j].quantity);            
+        }
+    }
+    console.log("Final bill : "+(total+PendingItemAmount));
     
     
     
