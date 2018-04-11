@@ -102,3 +102,5 @@ model.loginMaster().findAll({ where: { username: username, password:password } }
     // });
 });
 
+//jayesh ne khali calculaterent pe work ia he 
+//baki data nikhil ne lake dia he pura 2 din ki mehnat se.

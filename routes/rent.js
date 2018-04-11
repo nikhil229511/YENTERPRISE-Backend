@@ -21,22 +21,6 @@ router.get('/',function(req,res){
     });
 });
 
-/*router.get('/ba',function(req,res){
-    var sql="SELECT ba_id,name FROM business_associates WHERE is_customer=0";
-    connect.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        res.end(JSON.stringify(result));
-    });
-});
-
-router.get('/company',function(req,res){
-    var sql="SELECT company_id,name FROM company_masters";
-    connect.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        res.end(JSON.stringify(result));
-    });
-});*/
-
 router.post('/',function(req,res){
     
     invoice_no=req.body.invoice_no;
@@ -50,7 +34,7 @@ router.post('/',function(req,res){
     transport_charges=req.body.transport_charges;
     is_credit=req.body.is_credit;
     status=req.body.status;
-    //console.log(req.body.status);
+    
     async.series([
         function(callback){
             sql="START TRANSACTION";
@@ -78,7 +62,7 @@ router.post('/',function(req,res){
         function(callback){
             
             req.body.items.forEach(item => {
-                sqlSub="INSERT INTO rent_details(rent_master_id,item_detail_id,rate,quantity,cgst,sgst,igst) values ("+id+","+item.item_detail_id+","+item.rate+","+item.quantity+","+item.cgst+","+item.sgst+","+item.igst+");";
+                sqlSub="INSERT INTO rent_details(rent_master_id,item_detail_id,rate,quantity) values ("+id+","+item.item_detail_id+","+item.rate+","+item.quantity+");";
                 connect.query(sqlSub, function (err, result) {
                     if (err){        
                         res.writeHead(401);
@@ -144,7 +128,7 @@ router.put('/:rent_master_id',function(req,res){
         function(callback){
             
             req.body.items.forEach(item => {
-                sqlSub="UPDATE rent_details SET rent_master_id="+rent_master_id+",item_detail_id="+item.item_detail_id+",rate="+item.rate+",quantity="+item.quantity+",cgst="+item.cgst+",sgst="+item.sgst+",igst="+item.igst+" WHERE rent_master_id="+rent_master_id+" AND item_detail_id="+item.item_detail_id+";";
+                sqlSub="UPDATE rent_details SET rent_master_id="+rent_master_id+",item_detail_id="+item.item_detail_id+",rate="+item.rate+",quantity="+item.quantity+" WHERE rent_master_id="+rent_master_id+" AND item_detail_id="+item.item_detail_id+";";
                 connect.query(sqlSub, function (err, result) {
                     if (err){        
                         res.writeHead(401);
