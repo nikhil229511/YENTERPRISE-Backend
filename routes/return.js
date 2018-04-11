@@ -161,7 +161,6 @@ router.delete('/:return_master_id',function(req,res){
     async.series([
         function(callback){
             sql="START TRANSACTION";
-            console.log(sql);
             connect.query(sql, function (err, result) {
                 if (err){        
                     res.writeHead(401);
@@ -194,7 +193,6 @@ router.delete('/:return_master_id',function(req,res){
         },
         function(callback){
             sqlSub="COMMIT";
-            console.log(sqlSub);
             connect.query(sqlSub, function (err, result) {
                 if (err){        
                     res.writeHead(401);

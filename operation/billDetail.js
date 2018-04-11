@@ -92,103 +92,66 @@ router.get('/:invoice_no',function(req,res){
   function(){});
 });
 
-
-/*function calculateRent(){
-    //console.log(resObj);
-    var ditemid,dqty,ritemid,rqty,rate;
-    var days=calculateDays(resObj.dispatch[0].date,resObj.return[0].date);
-    //console.log(calculateDays(resObj.dispatch[0].date,resObj.return[0].date));
-    resObj.dispatch[0].dispatchedItems.forEach(element=>{
-        ditemid=element.item_detail_id;
-        dqty=element.quantity;
-        console.log('item: '+ditemid);
-        console.log('qty: '+dqty);
-    });
-
-    resObj.return[0].returnedItems.forEach(element=>{
-        ritemid=element.item_detail_id;
-        rqty=element.quantity;
-        console.log('ritem: '+ritemid);
-        console.log('rqty: '+rqty);
-    });
-
-    var rate= resObj.rent[0].rentedItems[0].rate;
-    console.log('rate: '+rate);
-    var rent=rate*days*rqty;
-    console.log('rent: '+rent);
-    console.log('days: '+days);
-}*/
 function calculateRent(){
     var days,ditemid,dqty,ritemid,rqty,rate;
     //var days=calculateDays(resObj.dispatch[0].date,resObj.return[0].date);
     var total=0;
-var return_id=0;
+    var returnItem_id = 0;
+    var return_id=0;
+    var i=0,j=0;
+
     //itrate through all the dispatch main items
-    for(var i=resObj.dispatch.length-1;i>=0;i--){
-        //itrate throush dispatched item list in each bill of dispatch
-        for(var j=resObj.dispatch[i].dispatchedItems.length-1 ;j>=0;j--){
+    for(i=resObj.dispatch.length-1;i>=0;i--)
+    {     
+        //itrate throush dispatched item list in each bill of dispatch   
+        for(j=resObj.dispatch[i].dispatchedItems.length-1 ;j>=0;j--){            
             
-            //check for item detail
-            if(resObj.dispatch[i].dispatchedItems[j].item_detail_id==resObj.return[return_id].returnedItems[0].item_detail_id){
+            if(resObj.dispatch[i].dispatchedItems[j].item_detail_id==resObj.return[return_id].returnedItems[returnItem_id].item_detail_id){
                 
                 days=calculateDays(resObj.dispatch[i].date,resObj.return[return_id].date);
-                rate=resObj.rent[0].rentedItems[0].rate;
+                rate=resObj.rent[return_id].rentedItems[returnItem_id].rate;
                 
-                //set rqty min of diapatched quantity and returned quantity
-                rqty = (resObj.return[return_id].returnedItems[0].quantity)>resObj.dispatch[i].dispatchedItems[j].quantity?resObj.dispatch[i].dispatchedItems[j].quantity:resObj.return[return_id].returnedItems[0].quantity;
+                console.log("\n\n---return Id : "+return_id+"\n---return Item id : "+returnItem_id+"\n---Dispatch Id : "+i+"\n---Dispatch Item Id : "+j);
                 
-                //subtract returned quantity from both returned and dispatch bill detail.
-                resObj.return[return_id].returnedItems[0].quantity -= rqty;
+                rqty = (resObj.return[return_id].returnedItems[returnItem_id].quantity)>resObj.dispatch[i].dispatchedItems[j].quantity?resObj.dispatch[i].dispatchedItems[j].quantity:resObj.return[return_id].returnedItems[returnItem_id].quantity;
+                resObj.return[return_id].returnedItems[returnItem_id].quantity -= rqty;
                 resObj.dispatch[i].dispatchedItems[j].quantity -= rqty;
-
-                // console.log(resObj.return[return_id].returnedItems[0].quantity+"-------"+resObj.dispatch[i].dispatchedItems[j].quantity+"------"+rqty);
                 
-                //if dispatched quantity is not yet returned increment j to 
-                //again search in same dispatch bill
                 if(resObj.dispatch[i].dispatchedItems[j].quantity > 0)
-                    //i++ should be there?
-                    j++;
+                     j++;
+                
                 var rent=rate*days*rqty;
                 console.log('rent: '+rent);
                 console.log('days: '+days);
+                
                 total+=rent;
                 
-            }  
-            //if return item is 0 i.e. all items has been returned        
-            if(resObj.return[return_id].returnedItems[0].quantity <= 0)
-            {
-                //if return bill are still available till date 
-                //incement return bill counter else print bill amount.
-                if(return_id < (resObj.return.length-1))
-                    return_id++;                    
-                else{
-                    console.log("Total bill : "+total);
-                    return true;
-                }                    
-            }  
+                if(resObj.return[return_id].returnedItems[returnItem_id].quantity <= 0)
+                {
+                    if(returnItem_id < resObj.return[return_id].returnedItems.length-1)
+                    {
+                        returnItem_id++;
+                        j=resObj.dispatch[resObj.dispatch.length-1].dispatchedItems.length;
+                        i=resObj.dispatch.length-1;
+                    }
+                    else if(returnItem_id<resObj.return[return_id].length-1 && return_id < (resObj.return.length-1))
+                    {
+                                return_id++; 
+                                returnItem_id=0;                                          
+                    }
+                    else
+                        {                            
+                            i = -1;
+                            j = -1;
+                            console.log("Total bill : "+total);
+                            return true;
+                        }                    
+                }
+            }          
+              
         }
     }
-    
-    
-    
-    
-    
-    /*resObj.dispatch[0].dispatchedItems.forEach(element=>{
-        ditemid=element.item_detail_id;
-        dqty=element.quantity;
-        console.log('item: '+ditemid);
-        console.log('qty: '+dqty);
-    });
-
-    resObj.return[0].returnedItems.forEach(element=>{
-        ritemid=element.item_detail_id;
-        rqty=element.quantity;
-        console.log('ritem: '+ritemid);
-        console.log('rqty: '+rqty);
-    });*/
-    
 }
-
 
 function calculateDays(startDate,endDate)
 {
@@ -228,59 +191,4 @@ function getReturnedItems(element,callback){
     });
 }
 
-/*router.post('/',function(req,res){
-    name=req.body.name;
-    add1=req.body.add1;
-    add2=req.body.add2;
-    PIN=req.body.PIN;
-    state=req.body.state;
-    statecode=req.body.statecode;
-    GSTNo=req.body.GSTNo;
-    contactno=req.body.contactno;
-    email=req.body.email;
-    logo=req.body.logo;
-
-    sql="INSERT INTO company_masters(name,add1,add2,PIN,state,statecode,GSTNo,contactno,email,logo) values ('"+name+"','"+add1+"','"+add2+"','"+PIN+"','"+state+"','"+statecode+"','"+GSTNo+"','"+contactno+"','"+email+"','"+logo+"')";
-        console.log(sql);
-        connect.query(sql, function (err, result) {
-        if (err) 
-            res.end('unsuccessful');
-        res.end("success");
-    });
-});/
-
-router.put('/:company_id',function(req,res){
-    company_id=req.params.company_id;
-    name=req.body.name;
-    add1=req.body.add1;
-    add2=req.body.add2;
-    PIN=req.body.PIN;
-    state=req.body.state;
-    statecode=req.body.statecode;
-    GSTNo=req.body.GSTNo;
-    contactno=req.body.contactno;
-    email=req.body.email;
-    logo=req.body.logo;
-
-    sql="UPDATE company_masters set name='"+name+"',add1='"+add1+"',add2='"+add2+"',PIN='"+PIN+"',state='"+state+"',statecode='"+statecode+"',GSTNo='"+GSTNo+"',contactno='"+contactno+"',email='"+email+"',logo='"+logo+"' WHERE company_id="+company_id+"";
-        console.log(sql);
-        connect.query(sql, function (err, result) {
-        if (err) 
-            res.end('unsuccessful');
-        res.end("success");
-    });
-});
-
-router.delete('/company_id',function(req,res){
-    company_id=req.params.company_id;
-
-    sql="DELETE FROM company_masters WHERE company_id="+company_id+"";
-        console.log(sql);
-        connect.query(sql, function (err, result) {
-        if (err) 
-            res.end('unsuccessful');
-        res.end("success");
-    });
-});
-*/
 module.exports = router;
