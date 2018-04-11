@@ -13,7 +13,7 @@ var totalSum=0,amountPaid,amount_due;
 var dispatch,Return,rent;
 var resObj={};
 
-router.get('/:invoice_no',function(req,res){
+router.put('/:invoice_no',function(req,res){
     res.contentType('application/json');
     async.series([
     //rent
@@ -77,55 +77,55 @@ router.get('/:invoice_no',function(req,res){
                         element.returnedItems=data;
                         lenOuter=parseInt(lenOuter)-1;
                         if (lenOuter === 0){                            
-                            resObj.return=result;
-                            res.write(JSON.stringify(resObj));
-                            calculateRent();
-                            res.end();
+                            resObj.return=result; 
+                            callback(null,'success'); 
                         }                                        
                     });        
                 });           
             }                        
         });   
+    },
+    function(callback){
+        if(resObj.rent[0].status=="pending")
+            resObj.FinalAmount=calculateRent();
+        res.write(JSON.stringify(resObj));                            
+        res.end();
     }
   ],       
   //callback
   function(){});
 });
 
+
+
 function calculateRent(){
     var days,ditemid,dqty,ritemid,rqty,rate;
-    //var days=calculateDays(resObj.dispatch[0].date,resObj.return[0].date);
-    var total=0;
-    var returnItem_id = 0;
-    var return_id=0;
-    var i=0,j=0;
+    var total=0,returnItem_id = 0,return_id=0,i=0,j=0;
 
-    //itrate through all the dispatch main items
     for(i=resObj.dispatch.length-1;i>=0;i--)
-    {     
-        //itrate throush dispatched item list in each bill of dispatch   
+    {        
         for(j=resObj.dispatch[i].dispatchedItems.length-1 ;j>=0;j--){            
-            
             if(resObj.dispatch[i].dispatchedItems[j].item_detail_id==resObj.return[return_id].returnedItems[returnItem_id].item_detail_id){
-                
                 days=calculateDays(resObj.dispatch[i].date,resObj.return[return_id].date);
-                rate=resObj.rent[return_id].rentedItems[returnItem_id].rate;
-                
-                console.log("\n\n---return Id : "+return_id+"\n---return Item id : "+returnItem_id+"\n---Dispatch Id : "+i+"\n---Dispatch Item Id : "+j);
-                
-                rqty = (resObj.return[return_id].returnedItems[returnItem_id].quantity)>resObj.dispatch[i].dispatchedItems[j].quantity?resObj.dispatch[i].dispatchedItems[j].quantity:resObj.return[return_id].returnedItems[returnItem_id].quantity;
+                var rate=0;
+                resObj.rent[0].rentedItems.forEach(temp=>{
+                    if(temp.item_detail_id==resObj.dispatch[i].dispatchedItems[j].item_detail_id)
+                        rate=temp.rate;
+                });                
+                        
+                //console.log("\n\n---return Id : "+return_id+"\n---return Item id : "+returnItem_id+"\n---Dispatch Id : "+i+"\n---Dispatch Item Id : "+j);
+                                
+                rqty = (resObj.return[return_id].returnedItems[returnItem_id].quantity)>resObj.dispatch[i].dispatchedItems[j].quantity?resObj.dispatch[i].dispatchedItems[j].quantity : resObj.return[return_id].returnedItems[returnItem_id].quantity;
                 resObj.return[return_id].returnedItems[returnItem_id].quantity -= rqty;
                 resObj.dispatch[i].dispatchedItems[j].quantity -= rqty;
-                
-                if(resObj.dispatch[i].dispatchedItems[j].quantity > 0)
+                 console.log(resObj.return[return_id].returnedItems[0].quantity+"-------"+resObj.dispatch[i].dispatchedItems[j].quantity+"------"+rqty);
+                 if(resObj.dispatch[i].dispatchedItems[j].quantity > 0)
                      j++;
-                
                 var rent=rate*days*rqty;
                 console.log('rent: '+rent);
                 console.log('days: '+days);
                 
                 total+=rent;
-                
                 if(resObj.return[return_id].returnedItems[returnItem_id].quantity <= 0)
                 {
                     if(returnItem_id < resObj.return[return_id].returnedItems.length-1)
@@ -143,14 +143,42 @@ function calculateRent(){
                         {                            
                             i = -1;
                             j = -1;
-                            console.log("Total bill : "+total);
-                            return true;
+                            console.log("Total bill of returned items : "+ total);
                         }                    
                 }
-            }          
-              
+            }                        
         }
     }
+ 
+    var PendingItemAmount=0;
+    for(i=resObj.dispatch.length-1;i>=0;i--)
+    {        
+        for(j=resObj.dispatch[i].dispatchedItems.length-1 ;j>=0;j--){
+            var rate;
+            days=calculateDays(resObj.dispatch[i].date,new Date((new Date().getFullYear())+"-"+((new Date().getMonth()+1))+"-"+new Date().getDate()));
+            resObj.rent[0].rentedItems.forEach(temp=>{
+                if(temp.item_detail_id===resObj.dispatch[i].dispatchedItems[j].item_detail_id)
+                    rate=temp.rate;
+            });
+            console.log("---"+rate+"---"+(days)+"------"+resObj.dispatch[i].dispatchedItems[j].quantity+"---"+(rate*days*(resObj.dispatch[i].dispatchedItems[j].quantity)));
+            PendingItemAmount+=rate*days*(resObj.dispatch[i].dispatchedItems[j].quantity);            
+        }
+    }
+    if(PendingItemAmount>0){
+        console.log("Final bill : "+(total+PendingItemAmount));
+    }   
+    else{
+        resObj.rent[0].amount=total;
+        sql="UPDATE rent_master set status='completed', amount="+total+" WHERE invoice_no="+resObj.rent[0].invoice_no+"";
+        console.log(sql);
+        connect.query(sql, function (err, result) {
+            if (err || result.length == 0){        
+                res.writeHead(401);
+                res.end();
+            }
+        });
+    }
+    return total+PendingItemAmount;
 }
 
 function calculateDays(startDate,endDate)

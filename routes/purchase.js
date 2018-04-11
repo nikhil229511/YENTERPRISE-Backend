@@ -76,7 +76,7 @@ router.post('/',function(req,res){
         function(callback){
             
             req.body.items.forEach(item => {
-                sqlSub="INSERT INTO purchase_details(purchase_master_id,item_detail_id,rate,quantity,cgst,sgst,igst) values ("+id+","+item.item_detail_id+","+item.rate+","+item.quantity+","+item.cgst+","+item.sgst+","+item.igst+");";
+                sqlSub="INSERT INTO purchase_details(purchase_master_id,item_detail_id,rate,quantity) values ("+id+","+item.item_detail_id+","+item.rate+","+item.quantity+");";
                 connect.query(sqlSub, function (err, result) {
                     if (err){        
                         res.writeHead(401);
@@ -142,7 +142,7 @@ router.put('/:purchase_master_id',function(req,res){
         function(callback){
             
             req.body.items.forEach(item => {
-                sqlSub="UPDATE purchase_details SET purchase_master_id="+purchase_master_id+",item_detail_id="+item.item_detail_id+",rate="+item.rate+",quantity="+item.quantity+",cgst="+item.cgst+",sgst="+item.sgst+",igst="+item.igst+" WHERE purchase_master_id="+purchase_master_id+" AND item_detail_id="+item.item_detail_id+";";
+                sqlSub="UPDATE purchase_details SET purchase_master_id="+purchase_master_id+",item_detail_id="+item.item_detail_id+",rate="+item.rate+",quantity="+item.quantity+" WHERE purchase_master_id="+purchase_master_id+" AND item_detail_id="+item.item_detail_id+";";
                 console.log(sqlSub); 
                 connect.query(sqlSub, function (err, result) {
                     if (err){        
