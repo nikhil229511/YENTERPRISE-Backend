@@ -27,7 +27,8 @@ router.post('/',function(req,res){
     hsn=req.body.hsn_code;
     gst_rate=req.body.gst_rate;
     description=req.body.description; 
-    
+    res.contentType('application/json')
+
     sql="INSERT INTO item_masters(item_master_name,hsn_code,gst_rate,description) values ('"+name+"','"+hsn+"',"+gst_rate+",'"+description+"')";
         console.log(sql);
         connect.query(sql, function (err, result) {
@@ -47,6 +48,8 @@ router.put('/:item_master_id',function(req,res){
     description=req.body.description; 
     gst_rate=req.body.gst_rate;
     item_master_id=req.body.item_master_id;
+    res.contentType('application/json')
+
     sql="UPDATE item_masters set gst_rate="+gst_rate+",item_master_name='"+name+"',hsn_code="+hsn+",description='"+description+"' WHERE item_master_id="+item_master_id+"";
         console.log(sql);
         connect.query(sql, function (err, result) {
@@ -62,7 +65,9 @@ router.put('/:item_master_id',function(req,res){
 
 router.delete('/:item_master_id',function(req,res){
     item_master_id=req.params.item_master_id;
-    
+   
+    res.contentType('application/json')
+
     sql="DELETE FROM item_masters WHERE item_master_id="+item_master_id+"";
         console.log(sql);
         connect.query(sql, function (err, result) {

@@ -21,6 +21,8 @@ router.get('/',function(req,res){
     });
 });
 
+
+
 /*router.get('/ba',function(req,res){
     var sql="SELECT ba_id,name FROM business_associates WHERE is_customer=0";
     connect.query(sql, function (err, result, fields) {
@@ -49,14 +51,14 @@ router.post('/',function(req,res){
     unloading_charges=req.body.unloading_charges;
     transport_charges=req.body.transport_charges;
     is_credit=req.body.is_credit;
-    
     async.series([
         function(callback){
             sql="START TRANSACTION";
             connect.query(sql, function (err, result) {
                 if (err){        
+                    console.log("ERR1: "+err.code)
                     res.writeHead(401);
-                    res.end();
+                    res.end("1");
                 }else
                     callback(null,'succes1');    
             });
@@ -64,9 +66,11 @@ router.post('/',function(req,res){
         function(callback){
             sql="INSERT INTO purchase_masters(invoice_no,date,ba_id,company_id,amount,taxes,loading_charges,unloading_charges,transport_charges,is_credit) values ('"+invoice_no+"','"+date+"',"+ba_id+","+company_id+","+amount+","+taxes+","+loading_charges+","+unloading_charges+","+transport_charges+","+is_credit+");";
             connect.query(sql, function (err, result) {
+                console.log(callback)
                 if (err){        
+                    console.log("ERR2: "+err.code)
                     res.writeHead(401);
-                    res.end();
+                    res.end("2");
                 }else{
                     id=result.insertId;
                     callback(null,'succes2');    
@@ -79,8 +83,9 @@ router.post('/',function(req,res){
                 sqlSub="INSERT INTO purchase_details(purchase_master_id,item_detail_id,rate,quantity) values ("+id+","+item.item_detail_id+","+item.rate+","+item.quantity+");";
                 connect.query(sqlSub, function (err, result) {
                     if (err){        
+                        console.log("ERR3: "+err.code)
                         res.writeHead(401);
-                        res.end();
+                        res.end("3");
                     }
                 });
             });
@@ -91,7 +96,7 @@ router.post('/',function(req,res){
             connect.query(sqlSub, function (err, result) {
                 if (err){        
                     res.writeHead(401);
-                    res.end();
+                    res.end("4");
                 }else
                     callback(null,'success4');
             });
