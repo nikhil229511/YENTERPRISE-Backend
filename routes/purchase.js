@@ -10,7 +10,7 @@ var async=require('async');
 var id,sql,invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_credit;
 
 router.get('/',function(req,res){
-    var sql="SELECT * FROM purchase_masters";
+    var sql="Select pd.purchase_detail_id, pm.purchase_master_id, id.item_detail_id, id.item_detail_name, quantity, rate, invoice_no, date, pm.ba_id, pm.company_id, pm.amount, pm.taxes, pm.loading_charges, pm.unloading_charges, pm.transport_charges, pm.is_credit FROM purchase_details pd inner join purchase_masters pm on pd.purchase_master_id = pm.purchase_master_id inner join business_associates ba on pm.ba_id = ba.ba_id inner join item_details id on pd.item_detail_id = id.item_detail_id";
     connect.query(sql, function (err, result, fields) {
         if (err || result.length == 0){        
             res.writeHead(401);
@@ -55,8 +55,8 @@ router.post('/',function(req,res){
         function(callback){
             sql="START TRANSACTION";
             connect.query(sql, function (err, result) {
-                if (err){        
-                    console.log("ERR1: "+err.code)
+                if (err){   
+                    console.log('1')     
                     res.writeHead(401);
                     res.end("1");
                 }else
@@ -66,9 +66,8 @@ router.post('/',function(req,res){
         function(callback){
             sql="INSERT INTO purchase_masters(invoice_no,date,ba_id,company_id,amount,taxes,loading_charges,unloading_charges,transport_charges,is_credit) values ('"+invoice_no+"','"+date+"',"+ba_id+","+company_id+","+amount+","+taxes+","+loading_charges+","+unloading_charges+","+transport_charges+","+is_credit+");";
             connect.query(sql, function (err, result) {
-                console.log(callback)
-                if (err){        
-                    console.log("ERR2: "+err.code)
+                if (err){  
+                    console.log('2')      
                     res.writeHead(401);
                     res.end("2");
                 }else{
@@ -82,8 +81,8 @@ router.post('/',function(req,res){
             req.body.items.forEach(item => {
                 sqlSub="INSERT INTO purchase_details(purchase_master_id,item_detail_id,rate,quantity) values ("+id+","+item.item_detail_id+","+item.rate+","+item.quantity+");";
                 connect.query(sqlSub, function (err, result) {
-                    if (err){        
-                        console.log("ERR3: "+err.code)
+                    if (err){     
+                        console.log('3')   
                         res.writeHead(401);
                         res.end("3");
                     }
@@ -95,6 +94,7 @@ router.post('/',function(req,res){
             sqlSub="COMMIT";
             connect.query(sqlSub, function (err, result) {
                 if (err){        
+                    console.log('4')
                     res.writeHead(401);
                     res.end("4");
                 }else
