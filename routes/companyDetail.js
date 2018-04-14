@@ -9,6 +9,8 @@ var bodyParser =require('body-parser');
 var sql,statecode,name,add1,add2,PIN,logo,email,state,contactno,GSTNO;
 
 router.get('/',function(req,res){
+    res.contentType('application/json')
+
     var sql="SELECT * FROM company_masters";
     connect.query(sql, function (err, result, fields) {
         if (err)
@@ -18,6 +20,8 @@ router.get('/',function(req,res){
 });
 
 router.post('/',function(req,res){
+    res.contentType('application/json')
+
     name=req.body.name;
     add1=req.body.add1;
     add2=req.body.add2;
@@ -39,6 +43,8 @@ router.post('/',function(req,res){
 });
 
 router.put('/:company_id',function(req,res){
+    res.contentType('application/json')
+
     company_id=req.params.company_id;
     name=req.body.name;
     add1=req.body.add1;
@@ -61,6 +67,8 @@ router.put('/:company_id',function(req,res){
 });
 
 router.delete('/:company_id',function(req,res){
+    res.contentType('application/json')
+
     company_id=req.params.company_id;
 
     sql="DELETE FROM company_masters WHERE company_id="+company_id+"";

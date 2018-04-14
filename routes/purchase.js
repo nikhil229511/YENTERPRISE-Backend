@@ -10,7 +10,7 @@ var async=require('async');
 var id,sql,invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_credit;
 
 router.get('/',function(req,res){
-    var sql="Select pd.purchase_detail_id,pm.purchase_master_id,id.item_detail_id,id.item_detail_name,im.item_master_id,im.item_master_name,quantity,rate,invoice_no,date,pm.ba_id,ba.name as ba_name,pm.company_id,cm.name as company_name,pm.amount,pm.taxes,pm.loading_charges,pm.unloading_charges,pm.transport_charges,pm.is_credit FROM purchase_details pd inner join purchase_masters pm on pd.purchase_master_id = pm.purchase_master_id inner join business_associates ba on pm.ba_id = ba.ba_id inner join item_details id on pd.item_detail_id = id.item_detail_id inner join item_masters im on id.item_master_id = im.item_master_id inner join company_masters cm on pm.company_id = cm.company_id";
+    var sql="Select pd.purchase_detail_id,pm.purchase_master_id,id.item_detail_id,id.item_detail_name,im.item_master_id,im.item_master_name,im.hsn_code,quantity,rate,invoice_no,date,pm.ba_id,ba.name as ba_name,pm.company_id,cm.name as company_name,pm.amount,pm.taxes,pm.loading_charges,pm.unloading_charges,pm.transport_charges,pm.is_credit FROM purchase_details pd inner join purchase_masters pm on pd.purchase_master_id = pm.purchase_master_id inner join business_associates ba on pm.ba_id = ba.ba_id inner join item_details id on pd.item_detail_id = id.item_detail_id inner join item_masters im on id.item_master_id = im.item_master_id inner join company_masters cm on pm.company_id = cm.company_id";
     connect.query(sql, function (err, result, fields) {
         if (err || result.length == 0){        
             res.writeHead(401);
@@ -20,6 +20,8 @@ router.get('/',function(req,res){
         }
     });
 });
+
+
 
 /*router.get('/ba',function(req,res){
     var sql="SELECT ba_id,name FROM business_associates WHERE is_customer=0";
@@ -49,7 +51,6 @@ router.post('/',function(req,res){
     unloading_charges=req.body.unloading_charges;
     transport_charges=req.body.transport_charges;
     is_credit=req.body.is_credit;
-    
     async.series([
         function(callback){
             sql="START TRANSACTION";
@@ -57,7 +58,7 @@ router.post('/',function(req,res){
                 if (err){   
                     console.log('1')     
                     res.writeHead(401);
-                    res.end();
+                    res.end("1");
                 }else
                     callback(null,'succes1');    
             });
@@ -68,7 +69,7 @@ router.post('/',function(req,res){
                 if (err){  
                     console.log('2')      
                     res.writeHead(401);
-                    res.end();
+                    res.end("2");
                 }else{
                     id=result.insertId;
                     callback(null,'succes2');    
@@ -83,7 +84,7 @@ router.post('/',function(req,res){
                     if (err){     
                         console.log('3')   
                         res.writeHead(401);
-                        res.end();
+                        res.end("3");
                     }
                 });
             });
@@ -95,7 +96,7 @@ router.post('/',function(req,res){
                 if (err){        
                     console.log('4')
                     res.writeHead(401);
-                    res.end();
+                    res.end("4");
                 }else
                     callback(null,'success4');
             });
