@@ -9,7 +9,7 @@ var bodyParser =require('body-parser');
 var date,miscitemid,comid,amount,des,sql;
 
 router.get('/',function(req,res){
-    var sql="SELECT * FROM misc_incomes";
+    var sql="SELECT i.misc_income_id,i.date,i.misc_item_id,mi.item_name,i.company_id,cm.name,i.amount,i.description FROM misc_incomes i INNER JOIN misc_items mi on mi.misc_item_id=i.misc_item_id INNER JOIN company_masters cm on cm.company_id=i.company_id";
     connect.query(sql, function (err, result, fields) {
         if (err || result.length == 0){        
             res.writeHead(401);
