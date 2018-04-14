@@ -10,7 +10,7 @@ var async=require('async');
 var id,sql,invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_credit;
 
 router.get('/',function(req,res){
-    var sql="Select pd.purchase_detail_id, pm.purchase_master_id, id.item_detail_id, id.item_detail_name, quantity, rate, invoice_no, date, pm.ba_id, pm.company_id, pm.amount, pm.taxes, pm.loading_charges, pm.unloading_charges, pm.transport_charges, pm.is_credit FROM purchase_details pd inner join purchase_masters pm on pd.purchase_master_id = pm.purchase_master_id inner join business_associates ba on pm.ba_id = ba.ba_id inner join item_details id on pd.item_detail_id = id.item_detail_id";
+    var sql="Select pd.purchase_detail_id,pm.purchase_master_id,id.item_detail_id,id.item_detail_name,im.item_master_id,im.item_master_name,quantity,rate,invoice_no,date,pm.ba_id,ba.name as ba_name,pm.company_id,cm.name as company_name,pm.amount,pm.taxes,pm.loading_charges,pm.unloading_charges,pm.transport_charges,pm.is_credit FROM purchase_details pd inner join purchase_masters pm on pd.purchase_master_id = pm.purchase_master_id inner join business_associates ba on pm.ba_id = ba.ba_id inner join item_details id on pd.item_detail_id = id.item_detail_id inner join item_masters im on id.item_master_id = im.item_master_id inner join company_masters cm on pm.company_id = cm.company_id";
     connect.query(sql, function (err, result, fields) {
         if (err || result.length == 0){        
             res.writeHead(401);
