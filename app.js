@@ -24,6 +24,7 @@ var gBill = require('./operation/generateBill');
 var billDetail = require('./operation/billDetail');
 var dispatch = require('./routes/dispatch');
 var Return =  require('./routes/return');
+var site =  require('./routes/site');
 
 var app = express();
 app.use(cors());
@@ -61,7 +62,7 @@ app.use('/generateBill', gBill);
 app.use('/billDetail', billDetail);
 app.use('/dispatch', dispatch);
 app.use('/return', Return);
-
+app.use('/site', site);
 
 
 // catch 404 and forward to error handler
