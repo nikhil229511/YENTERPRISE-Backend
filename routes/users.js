@@ -23,7 +23,6 @@ router.get('/',function(req,res){
 });
 
 router.post('/',function(req,res){
-    console.log(req.body);
     username=req.body.user.username;
     password=req.body.user.password;
     fName=req.body.user.fName;
