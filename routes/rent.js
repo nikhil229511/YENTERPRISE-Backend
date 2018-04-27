@@ -10,9 +10,9 @@ var async=require('async');
 var id,sql,invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_credit,status;
 
 router.get('/',function(req,res){
-    var sql="Select rd.rent_detail_id,rm.rent_master_id, id.item_detail_id, id.item_detail_name, quantity,rate,invoice_no,date, rm.site_id,sm.site_name, rm.company_id,cm.name as company_name, rm.amount, rm.taxes, rm.loading_charges, rm.unloading_charges,rm.transport_charges, rm.is_credit,rm.status FROM rent_details rd inner join rent_masters rm on rd.rent_master_id = rm.rent_master_id inner join site_masters sm on rm.site_id = sm.site_id inner join item_details id on rd.item_detail_id = id.item_detail_id inner join company_masters cm on cm.company_id = rm.company_id";
+    var sql="Select rd.rent_detail_id,rm.rent_master_id,im.item_master_name,im.hsn_code,id.item_detail_id, id.item_detail_name, quantity,rate,invoice_no,date, rm.site_id,sm.site_name, rm.company_id,cm.name as company_name, rm.amount, rm.taxes, rm.loading_charges, rm.unloading_charges,rm.transport_charges, rm.is_credit,rm.status FROM rent_details rd inner join rent_masters rm on rd.rent_master_id = rm.rent_master_id inner join site_masters sm on rm.site_id = sm.site_id inner join item_details id on rd.item_detail_id = id.item_detail_id inner join company_masters cm on cm.company_id = rm.company_id INNER JOIN item_masters im on im.item_master_id=rd.rent_master_id";
+    console.log(sql);
     connect.query(sql, function (err, result, fields) {
-        console.log('1');
         if (err || result.length == 0){        
             res.writeHead(401);
             res.end();
