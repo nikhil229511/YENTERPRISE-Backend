@@ -10,7 +10,7 @@ var async=require('async');
 var id,sql,invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_credit;
 
 router.get('/',function(req,res){
-    var sql="Select pd.purchase_detail_id,pm.purchase_master_id,id.item_detail_id,id.item_detail_name,im.item_master_id,im.item_master_name,im.hsn_code,quantity,rate,invoice_no,date,pm.ba_id,ba.name as ba_name,pm.company_id,cm.name as company_name,pm.amount,pm.taxes,pm.loading_charges,pm.unloading_charges,pm.transport_charges,pm.is_credit FROM purchase_details pd inner join purchase_masters pm on pd.purchase_master_id = pm.purchase_master_id inner join business_associates ba on pm.ba_id = ba.ba_id inner join item_details id on pd.item_detail_id = id.item_detail_id inner join item_masters im on id.item_master_id = im.item_master_id inner join company_masters cm on pm.company_id = cm.company_id";
+    var sql="Select pd.purchase_detail_id,pm.purchase_master_id,id.item_detail_id,id.item_detail_name,im.item_master_id,im.item_master_name,im.hsn_code,quantity,rate,invoice_no,date,pm.ba_id,ba.name as ba_name,pm.company_id,cm.name as company_name,pm.amount,pm.taxes,pm.loading_charges,pm.unloading_charges,pm.transport_charges,pm.is_credit  FROM purchase_details pd inner join purchase_masters pm on pd.purchase_master_id = pm.purchase_master_id inner join business_associates ba on ba.ba_id= pm.ba_idinner join item_details id on pd.item_detail_id = id.item_detail_id inner join item_masters im on id.item_master_id = im.item_master_id inner join company_masters cm on pm.company_id = cm.company_id";
     connect.query(sql, function (err, result, fields) {
         if (err || result.length == 0){        
             res.writeHead(401);
@@ -20,24 +20,6 @@ router.get('/',function(req,res){
         }
     });
 });
-
-
-
-/*router.get('/ba',function(req,res){
-    var sql="SELECT ba_id,name FROM business_associates WHERE is_customer=0";
-    connect.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        res.end(JSON.stringify(result));
-    });
-});
-
-router.get('/company',function(req,res){
-    var sql="SELECT company_id,name FROM company_masters";
-    connect.query(sql, function (err, result, fields) {
-        if (err) throw err;
-        res.end(JSON.stringify(result));
-    });
-});*/
 
 router.post('/',function(req,res){
     
@@ -67,7 +49,8 @@ router.post('/',function(req,res){
             sql="INSERT INTO purchase_masters(invoice_no,date,ba_id,company_id,amount,taxes,loading_charges,unloading_charges,transport_charges,is_credit) values ('"+invoice_no+"','"+date+"',"+ba_id+","+company_id+","+amount+","+taxes+","+loading_charges+","+unloading_charges+","+transport_charges+","+is_credit+");";
             connect.query(sql, function (err, result) {
                 if (err){  
-                    console.log('2')      
+                    console.log(sql)
+                    throw err;      
                     res.writeHead(401);
                     res.end("2");
                 }else{
@@ -82,9 +65,17 @@ router.post('/',function(req,res){
                 sqlSub="INSERT INTO purchase_details(purchase_master_id,item_detail_id,rate,quantity) values ("+id+","+item.item_detail_id+","+item.rate+","+item.quantity+");";
                 connect.query(sqlSub, function (err, result) {
                     if (err){     
-                        console.log('3')   
                         res.writeHead(401);
                         res.end("3");
+                    }
+                    else{
+                        s1="update item_details set total_items = total_items+"+item.quantity+" WHERE item_detail_id="+item.item_detail_id;                        
+                        connect.query(s1, function (err, result) {
+                            if(err){
+                                res.writeHead(401);
+                                res.end();
+                            }
+                        });
                     }
                 });
             });

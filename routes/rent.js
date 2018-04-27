@@ -12,6 +12,7 @@ var id,sql,invoice_no,date,ba_id,company_id,amount,taxes,overhead_charges,is_cre
 router.get('/',function(req,res){
     var sql="Select rd.rent_detail_id,rm.rent_master_id, id.item_detail_id, id.item_detail_name, quantity,rate,invoice_no,date, rm.site_id,sm.site_name, rm.company_id,cm.name as company_name, rm.amount, rm.taxes, rm.loading_charges, rm.unloading_charges,rm.transport_charges, rm.is_credit,rm.status FROM rent_details rd inner join rent_masters rm on rd.rent_master_id = rm.rent_master_id inner join site_masters sm on rm.site_id = sm.site_id inner join item_details id on rd.item_detail_id = id.item_detail_id inner join company_masters cm on cm.company_id = rm.company_id";
     connect.query(sql, function (err, result, fields) {
+        console.log('1');
         if (err || result.length == 0){        
             res.writeHead(401);
             res.end();
@@ -67,6 +68,15 @@ router.post('/',function(req,res){
                     if (err){        
                         res.writeHead(401);
                         res.end();
+                    }
+                    else{
+                        s1="update item_details set total_items = total_items-"+item.quantity+" WHERE item_detail_id="+item.item_detail_id;
+                        connect.query(s1,function(err,result){
+                            if(err){
+                                res.writeHead(401);
+                                res.end();
+                            }
+                        });
                     }
                 });
             });
